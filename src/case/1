@@ -1,0 +1,4 @@
+let size = 6;
+// add 5 \r\n ?"? ""
+  let new_size = size + 5;
+    let str = "hello\n \\ \" world";
