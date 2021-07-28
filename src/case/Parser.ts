@@ -37,7 +37,7 @@ async function main() {
 
   const lexer = await getLexer();
   const tree = program.parse(lexer);
-  console.log(tree);
+  console.log(tree.toString());
 }
 
 main();
