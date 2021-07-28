@@ -5,9 +5,9 @@ import { Lexer } from './Lexer';
 import { ParseException } from './ParseException';
 import { Token } from './Token';
 
-type FnCreateASTLeaf = (token: Token) => ASTree;
-type FnCreateASTList = (list: ASTree[]) => ASTree;
-type FnCreateASTree = FnCreateASTLeaf | FnCreateASTList;
+export type FnCreateASTLeaf = (token: Token) => ASTree;
+export type FnCreateASTList = (list: ASTree[]) => ASTree;
+// type FnCreateASTree = FnCreateASTLeaf | FnCreateASTList;
 
 interface Element {
   parse(lexer: Lexer, res: ASTree[]): void;
@@ -158,7 +158,7 @@ class Precedence {
   constructor(public value: number, public leftAssoc: boolean) {}
 }
 
-class Operators extends Map<string, Precedence> {
+export class Operators extends Map<string, Precedence> {
   static LEFT = true;
   static RIGHT = false;
   add(name: string, prec: number, leftAssoc: boolean) {
@@ -313,7 +313,7 @@ export class Parser {
     this.elements.push(new Repeat(p, true));
     return this;
   }
-  rep(p: Parser): Parser {
+  repeat(p: Parser): Parser {
     this.elements.push(new Repeat(p, false));
     return this;
   }
