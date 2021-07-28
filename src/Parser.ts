@@ -7,7 +7,6 @@ import { Token } from './Token';
 
 export type FnCreateASTLeaf = (token: Token) => ASTree;
 export type FnCreateASTList = (list: ASTree[]) => ASTree;
-// type FnCreateASTree = FnCreateASTLeaf | FnCreateASTList;
 
 interface Element {
   parse(lexer: Lexer, res: ASTree[]): void;

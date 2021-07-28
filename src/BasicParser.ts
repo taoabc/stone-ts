@@ -1,3 +1,15 @@
+/**
+ * stone 语法定义
+ * primary　　: "(" expr ")" | NUMBER | IDENTIFIER | STRING
+ * factor　　 : "-" primary | primary
+ * expr　　　 : factor { OP factor }
+ * block　　　: "{" [ statement ] {(";" | EOL) [ statement ]} "}"
+ * simple　 　: expr
+ * statement　: "if" expr block [ "else" block ]
+ * 　　　　　　| "while" expr block
+ * 　　　　　　| simple
+ * program　　: [ statement ] (";" | EOL)
+ */
 import { ASTLeaf } from './ast/ASTLeaf';
 import { ASTList } from './ast/ASTList';
 import { ASTree } from './ast/ASTree';
