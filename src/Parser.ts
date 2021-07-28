@@ -174,9 +174,11 @@ class Expr implements Element {
   ) {
     this.factory = Factory.getForASTList(fnCreate);
   }
+  // 最终只求出一个节点 right
   parse(lexer: Lexer, res: ASTree[]): void {
     let right = this.factor.parse(lexer);
     let prec: Precedence | void;
+    // 循环向后求right
     while ((prec = this.nextOperator(lexer)) != null)
       right = this.doShift(lexer, right, prec.value);
     res.push(right);
@@ -245,7 +247,9 @@ class Factory {
 }
 
 export class Parser {
+  // element 为孩子规则
   private elements: Element[] = [];
+  // 最终由factory来生成ASTree
   private factory!: Factory;
   static from(p: Parser): Parser {
     let parser = new Parser();
@@ -256,6 +260,7 @@ export class Parser {
   parse(lexer: Lexer): ASTree {
     const results: ASTree[] = [];
     for (const e of this.elements) e.parse(lexer, results);
+    // 生成parser对应的根节点
     return this.factory.make(results);
   }
   match(lexer: Lexer): boolean {
@@ -294,6 +299,7 @@ export class Parser {
     this.elements.push(new Skip(pat));
     return this;
   }
+  // 向语法规则中添加非终结符 p
   ast(p: Parser): Parser {
     this.elements.push(new Tree(p));
     return this;
@@ -316,6 +322,7 @@ export class Parser {
     this.elements.push(new Repeat(p, false));
     return this;
   }
+  // 特殊的表达式类型，需要接收工厂函数、子表达式、操作符
   expression(
     fnCreate: FnCreateASTList | undefined,
     subexp: Parser,
@@ -336,6 +343,7 @@ export class Parser {
   }
 }
 
+// 根节点只可能为list节点
 export function rule(fnCreate?: FnCreateASTList): Parser {
   let p = new Parser();
   p.reset(fnCreate);

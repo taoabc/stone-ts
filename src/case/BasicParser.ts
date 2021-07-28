@@ -3,7 +3,7 @@ import { Lexer, Reader } from '../Lexer';
 
 async function getLexer() {
   const reader = new Reader();
-  await reader.fromFile('./src/case/1');
+  await reader.fromFile('./src/case/2');
   return new Lexer(reader);
 }
 
