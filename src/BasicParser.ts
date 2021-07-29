@@ -65,6 +65,7 @@ export class BasicParser {
     operators.add('/', 4, Operators.LEFT);
     operators.add('%', 4, Operators.LEFT);
 
+    // 注意这里使用的引用
     const expr0: Parser = rule();
     const primary = rule(PrimaryExpr.create).or(
       rule().sep('(').ast(expr0).sep(')'),

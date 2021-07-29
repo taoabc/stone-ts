@@ -82,7 +82,7 @@ class StrToken extends Token {
 // [!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]
 export class Lexer {
   private pattern: RegExp =
-    /\s*((\/\/.*)|(\d+)|("(\"|\\|\n|[^"])*")|[\w_][\w\d_]*|==|<=|>=|&&|\||\|\||[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~])?/g;
+    /\s*((\/\/.*)|(\d+)|("(\"|\\\\|\\n|[^"])*")|[\w_][\w\d_]*|==|<=|>=|&&|\||\|\||[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~])?/g;
   private queue: Token[] = [];
   private hasMore = true;
 
@@ -119,15 +119,17 @@ export class Lexer {
     for (const match of matches) {
       this.addToken(lineNo, match);
     }
+    // 很关键，用来匹配sep(Token.EOL)
+    this.queue.push(new IdToken(lineNo, Token.EOL));
   }
 
   addToken(lineNo: number, match: string[]): void {
     // console.log('addToken', match);
     const m = match[1];
+    // if not a space
     if (m != null) {
-      // if not a space
+      // if not a comment
       if (match[2] == null) {
-        // if not a comment
         let token;
         if (match[3] != null) {
           token = new NumToken(lineNo, parseInt(m, 10));

@@ -52,9 +52,8 @@ class Repeat implements Element {
   parse(lexer: Lexer, res: ASTree[]): void {
     while (this.parser.match(lexer)) {
       const t = this.parser.parse(lexer);
-      if (t.classId() !== ASTList.CLASS_ID || t.numChildren() > 0) {
-        res.push(t);
-      }
+      // not just ASTList or is leaf
+      if (t.classId() !== ASTList.CLASS_ID || t.numChildren() > 0) res.push(t);
       if (this.onlyOnce) break;
     }
   }
