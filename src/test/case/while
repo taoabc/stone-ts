@@ -1,8 +1,0 @@
-while i < 10 {
-  if i % 2 == 0 { // even number?
-    even = even + i
-  } else {
-    odd = odd + i
-  }
-  i = i + 1
-}

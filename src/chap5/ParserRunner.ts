@@ -1,10 +1,10 @@
-import { BasicParser } from '../BasicParser';
-import { Lexer, Reader } from '../Lexer';
-import { Token } from '../Token';
+import { BasicParser } from '../stone/BasicParser';
+import { Lexer, Reader } from '../stone/Lexer';
+import { Token } from '../stone/Token';
 
 async function getLexer() {
   const reader = new Reader();
-  await reader.fromFile('./src/test/case/basic');
+  await reader.fromFile('./src/chap5/basic');
   return new Lexer(reader);
 }
 
