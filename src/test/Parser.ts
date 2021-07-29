@@ -30,16 +30,19 @@ function leafCreate<T extends ASTLeaf>(
 
 async function getLexer() {
   const reader = new Reader();
-  await reader.fromFile('./src/case/2');
+  await reader.fromFile('./src/test/case/basic');
   return new Lexer(reader);
 }
 
-function program() {
+function reserved() {
   const reserved: Set<string> = new Set();
   reserved.add(';');
   reserved.add('}');
   reserved.add(Token.EOL);
+  return reserved;
+}
 
+function operators() {
   const operators = new Operators();
   operators.add('=', 1, Operators.RIGHT);
   operators.add('==', 2, Operators.LEFT);
@@ -50,19 +53,22 @@ function program() {
   operators.add('*', 4, Operators.LEFT);
   operators.add('/', 4, Operators.LEFT);
   operators.add('%', 4, Operators.LEFT);
+  return operators;
+}
 
+function program() {
   const expr0 = rule();
   const primary = rule(PrimaryExpr.create).or(
     rule().sep('(').ast(expr0).sep(')'),
     rule().number(leafCreate(NumberLiteral)),
-    rule().identifier(reserved, leafCreate(Name)),
+    rule().identifier(reserved(), leafCreate(Name)),
     rule().string(leafCreate(StringLiteral))
   );
   const factor = rule().or(
     rule(listCreate(NegativeExpr)).sep('-').ast(primary),
     primary
   );
-  const expr = expr0.expression(listCreate(BinaryExpr), factor, operators);
+  const expr = expr0.expression(listCreate(BinaryExpr), factor, operators());
   const statement0 = rule();
   const block = rule(listCreate(BlockStmnt))
     .sep('{')

@@ -33,7 +33,7 @@ class OrTree implements Element {
     else res.push(p.parse(lexer));
   }
   match(lexer: Lexer): boolean {
-    return this.choose(lexer) !== null;
+    return this.choose(lexer) != null;
   }
   choose(lexer: Lexer): Parser | void {
     for (const p of this.parsers) {
@@ -345,7 +345,8 @@ export class Parser {
 // 根节点只可能为list节点
 // rule 不传，则表示创建一个ASTList，而创建一个ASTList会根据是否只有一个children来进行
 // rule 如果有值，则只能接收一个 ASTList 或者派生类的工厂函数
-// rule 的参数表示是一个什么样的节点，如果接下来的调用，只返回单个节点，那么基本上可以使用rule()
+// rule 的参数表示是一个什么样的节点，如果不传入，则在只有一个子节点的时候，直接返回该子节点
+// 但是对于NegativeExpr，则不能这样
 // 如果调用需要返回Stmnt，需要考虑传入工厂函数
 export function rule(fnCreate?: FnCreateASTList): Parser {
   let p = new Parser();

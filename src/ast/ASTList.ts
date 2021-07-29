@@ -16,7 +16,7 @@ export class ASTList implements ASTree {
   location(): string | null {
     for (const child of this._children) {
       const s = child.location();
-      if (s !== null) {
+      if (s != null) {
         return s;
       }
     }

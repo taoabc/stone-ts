@@ -1,4 +1,9 @@
 /**
+ * { pat } 模式 pat 至少重复0 次
+ * [ pat ] 与重复出现0 次或1 次的模式 pat 匹配
+ * pat1 | pat2 与 pat1或 pat2 匹配
+ * ()将括号内视为一个完整的模式
+ *
  * stone 语法定义
  * primary　　: "(" expr ")" | NUMBER | IDENTIFIER | STRING
  * factor　　 : "-" primary | primary
