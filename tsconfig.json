@@ -11,5 +11,6 @@
     "moduleResolution": "node",
     "sourceMap": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["src/chap6/ext.ts"]
 }

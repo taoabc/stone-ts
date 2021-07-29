@@ -3,9 +3,6 @@ import { ASTList } from './ASTList';
 import { ASTree } from './ASTree';
 
 export class BinaryExpr extends ASTList {
-  constructor(c: ASTree[]) {
-    super(c);
-  }
   left(): ASTree {
     return this.child(0);
   }
