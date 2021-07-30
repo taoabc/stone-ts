@@ -330,6 +330,7 @@ export class Parser {
     this.elements.push(new Expr(fnCreate, subexp, operators));
     return this;
   }
+  // 语法规则起始处的 or添加新的分支选项
   insertChoice(p: Parser): Parser {
     const e = this.elements[0];
     if (e instanceof OrTree) (e as OrTree).insert(p);
