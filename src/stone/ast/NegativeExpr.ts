@@ -11,4 +11,7 @@ export class NegativeExpr extends ASTList {
   toString() {
     return '-' + this.operand();
   }
+  classId(): string {
+    return '';
+  }
 }

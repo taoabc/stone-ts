@@ -14,4 +14,7 @@ export class WhileStmnt extends ASTList {
   toString() {
     return '(while ' + this.condition() + ' ' + this.body() + ')';
   }
+  classId(): string {
+    return '';
+  }
 }

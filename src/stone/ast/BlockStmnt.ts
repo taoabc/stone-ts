@@ -5,4 +5,8 @@ export class BlockStmnt extends ASTList {
   // constructor(c: ASTree[]) {
   //   super(c);
   // }
+
+  classId(): string {
+    return '';
+  }
 }

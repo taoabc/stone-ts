@@ -1,15 +1,17 @@
-import { Arguments } from '../stone/ast/Arguments';
-import { DefStmnt } from '../stone/ast/DefStmnt';
-import { ParameterList } from '../stone/ast/ParameterList';
-import { BasicParser, listCreate } from '../stone/BasicParser';
-import { rule } from '../stone/Parser';
+import { Arguments } from './ast/Arguments';
+import { DefStmnt } from './ast/DefStmnt';
+import { Name } from './ast/name';
+import { ParameterList } from './ast/ParameterList';
+import { PrimaryExpr } from './ast/PrimaryExpr';
+import { BasicParser, leafCreate, listCreate } from './BasicParser';
+import { rule } from './Parser';
 
 export class FuncParser extends BasicParser {
   private param = rule().identifier(this.reserved);
   private params = rule(listCreate(ParameterList))
     .ast(this.param)
     .repeat(rule().sep(',').ast(this.param));
-  private paramList = rule().sep('(').maybe(this.params).sep(')'); // 形参定义
+  protected paramList = rule().sep('(').maybe(this.params).sep(')'); // 形参定义
   private def = rule(listCreate(DefStmnt))
     .sep('def')
     .identifier(this.reserved)
@@ -30,5 +32,13 @@ export class FuncParser extends BasicParser {
     // Parser program = rule().or(def, statement, rule(NullStmnt.class))
     //                    .sep(";", Token.EOL);
     this.program.insertChoice(this.def);
+
+    // this.program = rule()
+    //   .ast(
+    //     rule(PrimaryExpr.create)
+    //       .identifier(this.reserved, leafCreate(Name))
+    //       .repeat(this.postfix)
+    //   )
+    //   .sep(';', '\\n');
   }
 }

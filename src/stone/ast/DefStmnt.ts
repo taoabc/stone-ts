@@ -17,4 +17,8 @@ export class DefStmnt extends ASTList {
   toString(): string {
     return `(def ${this.name()} ${this.parameters()} ${this.body()})`;
   }
+
+  classId(): string {
+    return '';
+  }
 }

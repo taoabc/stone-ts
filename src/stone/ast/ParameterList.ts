@@ -8,4 +8,7 @@ export class ParameterList extends ASTList {
   size(): number {
     return this.numChildren();
   }
+  classId(): string {
+    return '';
+  }
 }

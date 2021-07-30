@@ -1,3 +1,5 @@
-import { FuncInterpreter } from './FuncInterpreter';
+import { ClosureInterpreter } from './ClosureInterpreter';
+// import { FuncInterpreter } from './FuncInterpreter';
 
-FuncInterpreter.main();
+// FuncInterpreter.main();
+ClosureInterpreter.main();

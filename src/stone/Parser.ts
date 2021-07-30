@@ -53,6 +53,7 @@ class Repeat implements Element {
     while (this.parser.match(lexer)) {
       const t = this.parser.parse(lexer);
       // not just ASTList or is leaf
+      // TODO 这个地方的判断要千万小心
       if (t.classId() !== ASTList.CLASS_ID || t.numChildren() > 0) res.push(t);
       if (this.onlyOnce) break;
     }

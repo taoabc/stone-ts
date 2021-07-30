@@ -12,4 +12,7 @@ export class BinaryExpr extends ASTList {
   right(): ASTree {
     return this.child(2);
   }
+  classId(): string {
+    return '';
+  }
 }

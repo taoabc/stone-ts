@@ -1,4 +1,3 @@
-import '../chap6/BasicEvaluator';
 import { ASTreeEx, BlockEx } from '../chap6/BasicEvaluator';
 import { Environment } from '../chap6/Environment';
 import { Arguments } from '../stone/ast/Arguments';
@@ -9,6 +8,7 @@ import { PrimaryExpr } from '../stone/ast/PrimaryExpr';
 import { StoneException } from '../stone/StoneException';
 import { inject } from '../utils/inject';
 import { Func } from './Function';
+import '../chap6/BasicEvaluator';
 
 export class FuncEvaluator {}
 

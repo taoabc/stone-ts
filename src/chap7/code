@@ -6,3 +6,7 @@ def fib (n) {
   }
 }
 fib(10)
+def t() {
+  10
+}
+t()

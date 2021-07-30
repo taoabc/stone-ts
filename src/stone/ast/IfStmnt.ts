@@ -25,4 +25,7 @@ export class IfStmnt extends ASTList {
       ')'
     );
   }
+  classId(): string {
+    return '';
+  }
 }
