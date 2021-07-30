@@ -24,12 +24,12 @@ export class ASTreeEx extends ASTree {
 }
 class ASTListEx extends ASTList {
   eval(env: Environment): unknown {
-    throw new StoneException('cannot eval: ' + this.toString(), this);
+    throw new StoneException('cannot eval list: ' + this.toString(), this);
   }
 }
 class ASTLeafEx extends ASTLeaf {
   eval(env: Environment): unknown {
-    throw new StoneException('cannot eval: ' + this.toString(), this);
+    throw new StoneException('cannot eval leaf: ' + this.toString(), this);
   }
 }
 class NumberEx extends NumberLiteral {
@@ -110,7 +110,7 @@ class BinaryEx extends BinaryExpr {
     }
   }
 }
-class BlockEx extends BlockStmnt {
+export class BlockEx extends BlockStmnt {
   eval(env: Environment): unknown {
     let result: unknown = 0;
     for (const t of this.children()) {
