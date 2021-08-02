@@ -80,8 +80,12 @@ class BinaryEx extends BinaryExpr {
     if (typeof left === 'number' && typeof right === 'number') {
       return this.computeNumber(left, op, right);
     } else {
-      if (op === '+' && typeof left === 'string' && typeof right === 'string')
-        return left + right;
+      if (
+        op === '+' &&
+        (typeof left === 'string' || typeof left === 'number') &&
+        (typeof right === 'string' || typeof right === 'number')
+      )
+        return '' + left + right;
       else if (op === '==') {
         return left === right ? TRUE : FALSE;
       } else throw new StoneException('bad type', this);

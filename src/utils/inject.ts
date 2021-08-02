@@ -3,7 +3,10 @@ export function inject(target: Object, source: Object) {
   const names = Object.getOwnPropertyNames(source);
   for (const name of names) {
     if (name !== 'constructor') {
-      Object.defineProperty(target, name, { value: (source as any)[name] });
+      Object.defineProperty(target, name, {
+        value: (source as any)[name],
+        configurable: true,
+      });
     }
   }
 }

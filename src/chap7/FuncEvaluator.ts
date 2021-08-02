@@ -62,7 +62,7 @@ class PostfixEx extends Postfix {
   }
 }
 // 实参
-class ArgumentsEx extends Arguments {
+export class ArgumentsEx extends Arguments {
   eval(callerEnv: Environment, value: unknown) {
     if (!(value instanceof Func)) {
       throw new StoneException('bad function', this);
