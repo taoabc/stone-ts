@@ -11,7 +11,7 @@ import { StoneException } from '../stone/StoneException';
 import { inject } from '../utils/inject';
 import { ClassInfo } from './ClassInfo';
 import { StoneObject } from './StoneObject';
-import '../chap7/FuncEvaluator';
+import '../chap7/ClosureEvaluator';
 
 export class ClassStmntEx extends ClassStmnt {
   eval(env: Environment): unknown {

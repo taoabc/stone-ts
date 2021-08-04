@@ -5,8 +5,8 @@ import { BasicParser, listCreate } from './BasicParser';
 import { rule } from './Parser';
 
 export class FuncParser extends BasicParser {
-  private param = rule().identifier(this.reserved);
-  private params = rule(listCreate(ParameterList))
+  protected param = rule().identifier(this.reserved);
+  protected params = rule(listCreate(ParameterList))
     .ast(this.param)
     .repeat(rule().sep(',').ast(this.param));
   protected paramList = rule().sep('(').maybe(this.params).sep(')'); // 形参定义
@@ -16,7 +16,7 @@ export class FuncParser extends BasicParser {
     .ast(this.paramList)
     .ast(this.block);
   // 实参调用
-  private args = rule(listCreate(Arguments))
+  protected args = rule(listCreate(Arguments))
     .ast(this.expr)
     .repeat(rule().sep(',').ast(this.expr));
   protected postfix = rule().sep('(').maybe(this.args).sep(')');

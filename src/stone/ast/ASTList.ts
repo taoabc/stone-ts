@@ -2,7 +2,7 @@ import { ASTree } from './ASTree';
 
 export class ASTList implements ASTree {
   static CLASS_ID = 'ASTList';
-  constructor(protected _children: ASTree[]) {}
+  constructor(private _children: ASTree[]) {}
 
   child(i: number): ASTree {
     return this._children[i];
