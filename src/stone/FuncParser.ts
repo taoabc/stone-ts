@@ -1,9 +1,7 @@
 import { Arguments } from './ast/Arguments';
 import { DefStmnt } from './ast/DefStmnt';
-import { Name } from './ast/name';
 import { ParameterList } from './ast/ParameterList';
-import { PrimaryExpr } from './ast/PrimaryExpr';
-import { BasicParser, leafCreate, listCreate } from './BasicParser';
+import { BasicParser, listCreate } from './BasicParser';
 import { rule } from './Parser';
 
 export class FuncParser extends BasicParser {
