@@ -1,7 +1,7 @@
-import { Fun } from '../stone/ast/Fun';
-import { listCreate } from '../stone/BasicParser';
-import { rule } from '../stone/Parser';
-import { FuncParser } from '../stone/FuncParser';
+import { Fun } from './ast/Fun';
+import { listCreate } from './BasicParser';
+import { rule } from './Parser';
+import { FuncParser } from './FuncParser';
 
 export class ClosureParser extends FuncParser {
   constructor() {

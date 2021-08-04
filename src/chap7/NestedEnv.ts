@@ -20,6 +20,8 @@ export class NestedEnv implements Environment {
   putNew(name: string, value: unknown): void {
     this.values.set(name, value);
   }
+  // 获取包含 name 的 environment
+  // 先从自己开始找，再从外部找
   where(name: string): Environment | null {
     if (this.values.has(name)) return this;
     else if (this.outer != null) return (this.outer as EnvEx).where(name);

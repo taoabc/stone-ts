@@ -1,5 +1,5 @@
 import { BasicInterpreter } from '../chap6/BasicInterpreter';
-import { ClosureParser } from './ClosureParser';
+import { ClosureParser } from '../stone/ClosureParser';
 import { NestedEnv } from './NestedEnv';
 import './ClosureEvaluator';
 

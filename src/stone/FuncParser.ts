@@ -12,7 +12,7 @@ export class FuncParser extends BasicParser {
     .ast(this.param)
     .repeat(rule().sep(',').ast(this.param));
   protected paramList = rule().sep('(').maybe(this.params).sep(')'); // 形参定义
-  private def = rule(listCreate(DefStmnt))
+  protected def = rule(listCreate(DefStmnt))
     .sep('def')
     .identifier(this.reserved)
     .ast(this.paramList)
@@ -21,7 +21,7 @@ export class FuncParser extends BasicParser {
   private args = rule(listCreate(Arguments))
     .ast(this.expr)
     .repeat(rule().sep(',').ast(this.expr));
-  private postfix = rule().sep('(').maybe(this.args).sep(')');
+  protected postfix = rule().sep('(').maybe(this.args).sep(')');
 
   constructor() {
     super();

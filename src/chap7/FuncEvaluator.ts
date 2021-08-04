@@ -34,7 +34,7 @@ class DefStmntEx extends DefStmnt {
 }
 // [id, (), (), ...]
 // nest 从0开始
-class PrimaryEx extends PrimaryExpr {
+export class PrimaryEx extends PrimaryExpr {
   operand() {
     return this.child(0);
   }

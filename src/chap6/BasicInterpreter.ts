@@ -24,7 +24,7 @@ export class BasicInterpreter {
       const t = bp.parse(lexer);
       if (!(t instanceof NullStmnt)) {
         const r = (t as ASTreeEx).eval(env);
-        console.log(r);
+        // console.log(r); print 支持后，就不需要这个了
       }
     }
   }

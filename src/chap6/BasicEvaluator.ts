@@ -57,7 +57,7 @@ class NegativeEx extends NegativeExpr {
     else throw new StoneException('bad type for -', this);
   }
 }
-class BinaryEx extends BinaryExpr {
+export class BinaryEx extends BinaryExpr {
   eval(env: Environment): unknown {
     const op = this.operator();
     if ('=' === op) {
@@ -69,6 +69,7 @@ class BinaryEx extends BinaryExpr {
       return this.computeOp(left, op, right);
     }
   }
+  // 计算赋值 left = rvalue
   protected computeAssign(env: Environment, rvalue: unknown) {
     const l = this.left();
     if (l instanceof Name) {

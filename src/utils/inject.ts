@@ -5,7 +5,7 @@ export function inject(target: Object, source: Object) {
     if (name !== 'constructor') {
       Object.defineProperty(target, name, {
         value: (source as any)[name],
-        configurable: true,
+        configurable: true, // 可以被覆盖
       });
     }
   }
