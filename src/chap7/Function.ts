@@ -15,6 +15,9 @@ export class Func {
   body(): BlockStmnt {
     return this._body;
   }
+  env(): Environment {
+    return this._env;
+  }
   makeEnv(): Environment {
     return new NestedEnv(this._env);
   }

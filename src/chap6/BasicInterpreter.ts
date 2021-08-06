@@ -7,19 +7,13 @@ import { ASTreeEx } from './BasicEvaluator';
 import { Environment } from './Environment';
 import './BasicEvaluator';
 
-async function getLexer(filename: string) {
-  const reader = new Reader();
-  await reader.fromFile(filename);
-  return new Lexer(reader);
-}
-
 const FILENAME = './src/chap6/stone';
 export class BasicInterpreter {
   static main() {
     BasicInterpreter.run(FILENAME, new BasicParser(), new BasicEnv());
   }
   static async run(filename: string, bp: BasicParser, env: Environment) {
-    const lexer = await getLexer(filename);
+    const lexer = await BasicInterpreter.getLexer(filename);
     while (lexer.peek(0) !== Token.EOF) {
       const t = bp.parse(lexer);
       if (!(t instanceof NullStmnt)) {
@@ -27,5 +21,10 @@ export class BasicInterpreter {
         console.log(r);
       }
     }
+  }
+  static async getLexer(filename: string) {
+    const reader = new Reader();
+    await reader.fromFile(filename);
+    return new Lexer(reader);
   }
 }

@@ -1,6 +1,7 @@
 class Location {
   constructor(public nest: number, public index: number) {}
 }
+// store {name:index}
 export class Symbols {
   protected table: Map<string, number> = new Map();
   constructor(protected outer?: Symbols) {}
@@ -12,6 +13,7 @@ export class Symbols {
       this.table.set(key, value);
     }
   }
+  // find self
   find(key: string) {
     return this.table.get(key);
   }
@@ -20,10 +22,11 @@ export class Symbols {
   }
   getNest(key: string, nest: number): Location | null {
     const index = this.table.get(key);
-    if (index == null)
+    if (index == null) {
       if (this.outer == null) return null;
+      // 如果outer存在，那么返回的层数nest+1
       else return this.outer.getNest(key, nest + 1);
-    else return new Location(nest, index);
+    } else return new Location(nest, index);
   }
   putNew(key: string): number {
     const i = this.find(key);
