@@ -1,4 +1,5 @@
-import { BinaryEx, BlockEx } from '../chap6/BasicEvaluator';
+// 实际测试发现，在JS下，使用Array带来的性能提升非常有限，不使用是8.3秒，使用后7.5秒
+import { BinaryEx } from '../chap6/BasicEvaluator';
 import { Environment } from '../chap6/Environment';
 import { ASTLeaf } from '../stone/ast/ASTLeaf';
 import { ASTList } from '../stone/ast/ASTList';
