@@ -6,9 +6,8 @@ import { ParameterList } from '../stone/ast/ParameterList';
 import { Postfix } from '../stone/ast/Postfix';
 import { PrimaryExpr } from '../stone/ast/PrimaryExpr';
 import { StoneException } from '../stone/StoneException';
-import { inject } from '../utils/inject';
+import { astFactory } from '../utils/ASTFactory';
 import { Func } from './Function';
-import '../chap6/BasicEvaluator';
 
 export class FuncEvaluator {}
 
@@ -86,9 +85,4 @@ class ParamsEx extends ParameterList {
   }
 }
 
-inject(Environment.prototype, EnvEx.prototype);
-inject(DefStmnt.prototype, DefStmntEx.prototype);
-inject(PrimaryExpr.prototype, PrimaryEx.prototype);
-inject(Postfix.prototype, PostfixEx.prototype);
-inject(Arguments.prototype, ArgumentsEx.prototype);
-inject(ParameterList.prototype, ParamsEx.prototype);
+astFactory.setList(DefStmntEx, PrimaryEx, PostfixEx, ArgumentsEx, ParamsEx);

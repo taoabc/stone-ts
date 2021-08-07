@@ -1,8 +1,7 @@
 import { Environment } from '../chap6/Environment';
 import { Fun } from '../stone/ast/Fun';
-import { inject } from '../utils/inject';
 import { Func } from './Function';
-import './FuncEvaluator';
+import { astFactory } from '../utils/ASTFactory';
 
 export class FunEx extends Fun {
   eval(env: Environment): unknown {
@@ -10,4 +9,4 @@ export class FunEx extends Fun {
   }
 }
 
-inject(Fun.prototype, FunEx.prototype);
+astFactory.setList(FunEx);

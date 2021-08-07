@@ -1,12 +1,14 @@
+import { astFactory } from '../utils/ASTFactory';
 import { ArrayLiteral } from './ast/ArrayLiteral';
 import { ArrayRef } from './ast/ArrayRef';
-import { listCreate } from './BasicParser';
 import { FuncParser } from './FuncParser';
 import { rule } from './Parser';
 
+astFactory.setList(ArrayLiteral, ArrayRef);
+
 // TODO [stirng, stirng] 有BUG
 export class ArrayParser extends FuncParser {
-  protected elements = rule(listCreate(ArrayLiteral))
+  protected elements = rule(astFactory.getListCreator(ArrayLiteral))
     .ast(this.expr)
     .repeat(rule().sep(',').ast(this.expr));
   constructor() {
@@ -14,7 +16,7 @@ export class ArrayParser extends FuncParser {
     this.reserved.add(']');
     this.primary.insertChoice(rule().sep('[').maybe(this.elements).sep(']'));
     this.postfix.insertChoice(
-      rule(listCreate(ArrayRef)).sep('[').ast(this.expr).sep(']')
+      rule(astFactory.getListCreator(ArrayRef)).sep('[').ast(this.expr).sep(']')
     );
   }
 }

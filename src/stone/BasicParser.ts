@@ -55,13 +55,16 @@ export function leafCreate(classType: typeof ASTLeaf): FnCreateASTLeaf {
   return (t: Token) => new classType(t);
 }
 
-function createPrimaryExpr(c: ASTree[]) {
-  return c.length === 1 ? c[0] : astFactory.getListCreator(PrimaryExpr)(c);
+function createPrimaryExpr(c: ASTree[]): ASTree {
+  if (c.length === 1) return c[0];
+  const PrimaryC = astFactory.getList(PrimaryExpr);
+  return new PrimaryC(c);
 }
 
 astFactory.setLeaf(ASTLeaf, NumberLiteral, Name, StringLiteral);
 
 astFactory.setList(
+  ASTList,
   PrimaryExpr,
   NegativeExpr,
   BinaryExpr,

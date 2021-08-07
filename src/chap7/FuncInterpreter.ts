@@ -4,7 +4,7 @@ import { NestedEnv } from './NestedEnv';
 import './FuncEvaluator';
 
 export class FuncInterpreter extends BasicInterpreter {
-  static main() {
-    BasicInterpreter.run('./src/chap7/code', new FuncParser(), new NestedEnv());
+  static main(filename: string) {
+    BasicInterpreter.run(filename, new FuncParser(), new NestedEnv());
   }
 }
