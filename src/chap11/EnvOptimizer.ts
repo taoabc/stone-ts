@@ -1,8 +1,8 @@
-import { BinaryEx } from '../chap6/BasicEvaluator';
+import { BinaryEx, BlockEx } from '../chap6/BasicEvaluator';
 import { Environment } from '../chap6/Environment';
+import { ASTLeaf } from '../stone/ast/ASTLeaf';
 import { ASTList } from '../stone/ast/ASTList';
 import { ASTree } from '../stone/ast/ASTree';
-import { BinaryExpr } from '../stone/ast/BinaryExpr';
 import { BlockStmnt } from '../stone/ast/BlockStmnt';
 import { DefStmnt } from '../stone/ast/DefStmnt';
 import { Fun } from '../stone/ast/Fun';
@@ -10,6 +10,7 @@ import { Name } from '../stone/ast/Name';
 import { ParameterList } from '../stone/ast/ParameterList';
 import { StoneException } from '../stone/StoneException';
 import { Token } from '../stone/Token';
+import { astFactory } from '../utils/ASTFactory';
 import { inject } from '../utils/inject';
 import { OptFunction } from './OptFunction';
 import { Symbols } from './Symbols';
@@ -36,6 +37,9 @@ export class ASTreeOptEx extends ASTree {
     throw new Error('not impl');
   }
 }
+export class ASTLeafEx extends ASTLeaf {
+  lookup(syms: Symbols): void {}
+}
 export class ASTListEx extends ASTList {
   lookup(syms: Symbols): void {
     for (const t of this.children()) (t as ASTreeOptEx).lookup(syms);
@@ -58,6 +62,11 @@ export class DefStmntEx extends DefStmnt {
     return this.name();
   }
 }
+// class BlockEnvOptEx extends BlockEx {
+//   lookup(syms: Symbols): void {
+//     for (const t of this.children()) (t as ASTreeOptEx).lookup(syms);
+//   }
+// }
 export class FunEx extends Fun {
   protected size: number = -1;
   lookup(syms: Symbols): void {
@@ -141,11 +150,10 @@ export class BinaryEx2 extends BinaryEx {
     } else return super.computeAssign(env, rvalue);
   }
 }
-inject(Environment.prototype, EnvEx2.prototype);
-inject(ASTree.prototype, ASTreeOptEx.prototype);
-inject(ASTList.prototype, ASTListEx.prototype);
-inject(DefStmnt.prototype, DefStmntEx.prototype);
-inject(Fun.prototype, FunEx.prototype);
-inject(ParameterList.prototype, ParamsEx.prototype);
-inject(Name.prototype, NameEx.prototype);
-inject(BinaryExpr.prototype, BinaryEx2.prototype);
+
+export function EnableEnvOptimizer() {
+  astFactory.setLeaf(NameEx);
+  astFactory.setList(ASTListEx, DefStmntEx, FunEx, ParamsEx, BinaryEx2);
+  inject(ASTList.prototype, ASTListEx.prototype);
+  inject(ASTLeaf.prototype, ASTLeafEx.prototype);
+}

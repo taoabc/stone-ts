@@ -2,16 +2,14 @@ import { ASTreeEx, BinaryEx } from '../chap6/BasicEvaluator';
 import { Environment } from '../chap6/Environment';
 import { EnvEx, PrimaryEx } from '../chap7/FuncEvaluator';
 import { NestedEnv } from '../chap7/NestedEnv';
-import { BinaryExpr } from '../stone/ast/BinaryExpr';
 import { ClassBody } from '../stone/ast/ClassBody';
 import { ClassStmnt } from '../stone/ast/ClassStmnt';
 import { Dot } from '../stone/ast/Dot';
 import { PrimaryExpr } from '../stone/ast/PrimaryExpr';
 import { StoneException } from '../stone/StoneException';
-import { inject } from '../utils/inject';
 import { ClassInfo } from './ClassInfo';
 import { StoneObject } from './StoneObject';
-import '../chap7/ClosureEvaluator';
+import { astFactory } from '../utils/ASTFactory';
 
 export class ClassStmntEx extends ClassStmnt {
   eval(env: Environment): unknown {
@@ -76,7 +74,6 @@ export class AssignEx extends BinaryEx {
   }
 }
 
-inject(ClassStmnt.prototype, ClassStmntEx.prototype);
-inject(ClassBody.prototype, ClassBodyEx.prototype);
-inject(Dot.prototype, DotEx.prototype);
-inject(BinaryExpr.prototype, AssignEx.prototype);
+export function EnableClassEvaluator() {
+  astFactory.setList(ClassStmntEx, ClassBodyEx, DotEx, AssignEx);
+}

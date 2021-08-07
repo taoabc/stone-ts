@@ -9,4 +9,6 @@ export class FunEx extends Fun {
   }
 }
 
-astFactory.setList(FunEx);
+export function EnableClosureEvaluator() {
+  astFactory.setList(FunEx);
+}

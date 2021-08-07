@@ -6,9 +6,9 @@ import './ClassEvaluator';
 import '../chap8/NativeEvaluator';
 
 export class ClassInterpreter extends BasicInterpreter {
-  static main() {
+  static main(filename: string) {
     BasicInterpreter.run(
-      './src/chap9/class.stone',
+      filename,
       new ClassParser(),
       new Natives().environment(new NestedEnv())
     );

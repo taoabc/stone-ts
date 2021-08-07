@@ -1,5 +1,6 @@
+import { EnableBasicEvaluator } from './BasicEvaluator';
 import { BasicInterpreter } from './BasicInterpreter';
 
-import './BasicEvaluator';
+EnableBasicEvaluator();
 
 BasicInterpreter.main('./src/chap6/stone');

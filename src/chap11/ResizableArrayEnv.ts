@@ -2,9 +2,7 @@ import { Environment } from '../chap6/Environment';
 import { EnvEx } from '../chap7/FuncEvaluator';
 import { ArrayEnv } from './ArrayEnv';
 import { Symbols } from './Symbols';
-import { inject } from '../utils/inject';
 
-import './ArrayEnv';
 // JS数组本身是不定长的
 export class ResizableArrayEnv extends ArrayEnv {
   protected names: Symbols;
@@ -50,5 +48,3 @@ export class ResizableArrayEnv extends ArrayEnv {
     this.values[index] = value;
   }
 }
-
-inject(Environment.prototype, ResizableArrayEnv.prototype);

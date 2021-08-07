@@ -3,9 +3,8 @@ import { Environment } from '../chap6/Environment';
 import { PrimaryEx } from '../chap7/FuncEvaluator';
 import { ArrayLiteral } from '../stone/ast/ArrayLiteral';
 import { ArrayRef } from '../stone/ast/ArrayRef';
-import { BinaryExpr } from '../stone/ast/BinaryExpr';
 import { StoneException } from '../stone/StoneException';
-import { inject } from '../utils/inject';
+import { astFactory } from '../utils/ASTFactory';
 
 export class ArrayListEx extends ArrayLiteral {
   eval(env: Environment): unknown {
@@ -46,6 +45,6 @@ export class AssignEx extends BinaryEx {
   }
 }
 
-inject(ArrayLiteral.prototype, ArrayListEx.prototype);
-inject(ArrayRef.prototype, ArrayRefEx.prototype);
-inject(BinaryExpr.prototype, AssignEx.prototype);
+export function EnableArrayEvaluator() {
+  astFactory.setList(ArrayListEx, ArrayRefEx, AssignEx);
+}

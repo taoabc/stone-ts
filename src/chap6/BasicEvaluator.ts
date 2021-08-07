@@ -147,5 +147,7 @@ class WhileEx extends WhileStmnt {
   }
 }
 
-astFactory.setLeaf(ASTLeafEx, NumberEx, StringEx, NameEx);
-astFactory.setList(ASTListEx, NegativeEx, BinaryEx, BlockEx, IfEx, WhileEx);
+export function EnableBasicEvaluator() {
+  astFactory.setLeaf(ASTLeafEx, NumberEx, StringEx, NameEx);
+  astFactory.setList(ASTListEx, NegativeEx, BinaryEx, BlockEx, IfEx, WhileEx);
+}

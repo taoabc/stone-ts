@@ -85,4 +85,6 @@ class ParamsEx extends ParameterList {
   }
 }
 
-astFactory.setList(DefStmntEx, PrimaryEx, PostfixEx, ArgumentsEx, ParamsEx);
+export function EnableFuncEvaluator() {
+  astFactory.setList(DefStmntEx, PrimaryEx, PostfixEx, ArgumentsEx, ParamsEx);
+}

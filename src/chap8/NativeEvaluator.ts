@@ -1,12 +1,8 @@
 import { Environment } from '../chap6/Environment';
 import { ArgumentsEx } from '../chap7/FuncEvaluator';
-// import { StoneException } from '../stone/StoneException';
 import { ASTreeEx } from '../chap6/BasicEvaluator';
 import { NativeFunction } from './NativeFunction';
-import { inject } from '../utils/inject';
-import { Arguments } from '../stone/ast/Arguments';
-
-import '../chap7/FuncEvaluator';
+import { astFactory } from '../utils/ASTFactory';
 
 export class NativeArgEx extends ArgumentsEx {
   eval(callerEnv: Environment, value: unknown) {
@@ -26,4 +22,6 @@ export class NativeArgEx extends ArgumentsEx {
   }
 }
 
-inject(Arguments.prototype, NativeArgEx.prototype);
+export function EnableNativeEvaluator() {
+  astFactory.setList(NativeArgEx);
+}

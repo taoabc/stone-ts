@@ -5,9 +5,9 @@ import { Natives } from './Natives';
 import './NativeEvaluator';
 
 export class NativeInterpreter extends BasicInterpreter {
-  static main() {
+  static main(filename: string) {
     this.run(
-      './src/chap8/fib.stone',
+      filename,
       new ClosureParser(),
       new Natives().environment(new NestedEnv())
     );

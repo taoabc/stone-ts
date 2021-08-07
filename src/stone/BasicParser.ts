@@ -101,7 +101,9 @@ export class BasicParser {
     .option(this.statement0)
     .repeat(rule().sep(';', Token.EOL).option(this.statement0))
     .sep('}');
-  protected simple = rule(PrimaryExpr.create).ast(this.expr);
+  protected simple = rule(astFactory.getListCreator(PrimaryExpr)).ast(
+    this.expr
+  );
   protected statement = this.statement0.or(
     rule(astFactory.getListCreator(IfStmnt))
       .sep('if')
