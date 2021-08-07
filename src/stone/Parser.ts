@@ -1,3 +1,4 @@
+import { astFactory } from '../utils/ASTFactory';
 import { ASTLeaf } from './ast/ASTLeaf';
 import { ASTList } from './ast/ASTList';
 import { ASTree } from './ast/ASTree';
@@ -66,7 +67,8 @@ class Repeat implements Element {
 class AToken implements Element {
   private factory: Factory;
   constructor(fnCreate?: FnCreateASTLeaf) {
-    fnCreate = fnCreate || ((token: Token) => new ASTLeaf(token));
+    fnCreate =
+      fnCreate || ((token: Token) => astFactory.getLeafCreator(ASTLeaf)(token));
     this.factory = Factory.getForASTLeaf(fnCreate);
   }
   parse(lexer: Lexer, res: ASTree[]): void {
@@ -142,7 +144,7 @@ class Leaf implements Element {
     return false;
   }
   find(res: ASTree[], t: Token): void {
-    res.push(new ASTLeaf(t));
+    res.push(astFactory.getLeafCreator(ASTLeaf)(t));
   }
 }
 
@@ -189,7 +191,7 @@ class Expr implements Element {
   doShift(lexer: Lexer, left: ASTree, prec: number): ASTree {
     const list: ASTree[] = [];
     list.push(left);
-    list.push(new ASTLeaf(lexer.read()));
+    list.push(astFactory.getLeafCreator(ASTLeaf)(lexer.read()));
     let right = this.factor.parse(lexer);
     let next: Precedence | void;
     while (
@@ -230,7 +232,7 @@ class Factory {
       make0 = (arg: ASTree[] | Token) => {
         if (!Array.isArray(arg)) throw new Error('except ASTree[]');
         if (arg.length === 1) return arg[0];
-        else return new ASTList(arg);
+        else return astFactory.getListCreator(ASTList)(arg);
       };
     } else {
       make0 = (arg: ASTree[] | Token) => {

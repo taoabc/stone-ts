@@ -1,10 +1,7 @@
 import { ASTList } from './ASTList';
-import { ASTree } from './ASTree';
 
 export class NegativeExpr extends ASTList {
-  // constructor(c: ASTree[]) {
-  //   super(c);
-  // }
+  static CLASS_ID = 'NegativeExpr';
   operand() {
     return this.child(0);
   }

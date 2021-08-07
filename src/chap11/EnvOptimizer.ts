@@ -6,7 +6,7 @@ import { BinaryExpr } from '../stone/ast/BinaryExpr';
 import { BlockStmnt } from '../stone/ast/BlockStmnt';
 import { DefStmnt } from '../stone/ast/DefStmnt';
 import { Fun } from '../stone/ast/Fun';
-import { Name } from '../stone/ast/name';
+import { Name } from '../stone/ast/Name';
 import { ParameterList } from '../stone/ast/ParameterList';
 import { StoneException } from '../stone/StoneException';
 import { Token } from '../stone/Token';

@@ -3,6 +3,7 @@ import { ASTList } from './ASTList';
 import { ASTree } from './ASTree';
 
 export class BinaryExpr extends ASTList {
+  static CLASS_ID = 'BinaryExpr';
   left(): ASTree {
     return this.child(0);
   }

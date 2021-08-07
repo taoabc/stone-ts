@@ -1,10 +1,7 @@
 import { ASTList } from './ASTList';
-import { ASTree } from './ASTree';
 
 export class BlockStmnt extends ASTList {
-  // constructor(c: ASTree[]) {
-  //   super(c);
-  // }
+  static CLASS_ID = 'BlockStmnt';
 
   classId(): string {
     return '';

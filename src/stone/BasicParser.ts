@@ -15,13 +15,14 @@
  * 　　　　　　| simple
  * program　　: [ statement ] (";" | EOL)
  */
+import { astFactory } from '../utils/ASTFactory';
 import { ASTLeaf } from './ast/ASTLeaf';
 import { ASTList } from './ast/ASTList';
 import { ASTree } from './ast/ASTree';
 import { BinaryExpr } from './ast/BinaryExpr';
 import { BlockStmnt } from './ast/BlockStmnt';
 import { IfStmnt } from './ast/IfStmnt';
-import { Name } from './ast/name';
+import { Name } from './ast/Name';
 import { NegativeExpr } from './ast/NegativeExpr';
 import { NullStmnt } from './ast/NullStmnt';
 import { NumberLiteral } from './ast/NumberLiteral';
@@ -44,51 +45,75 @@ export function listCreate<T extends ASTList>(
   return (t: ASTree[]) => new classType(t);
 }
 
-export function leafCreate<T extends ASTLeaf>(
-  classType: new (t: Token) => T
-): FnCreateASTLeaf {
+// export function leafCreate<T extends ASTLeaf>(
+//   classType: new (t: Token) => T
+// ): FnCreateASTLeaf {
+//   return (t: Token) => new classType(t);
+// }
+
+export function leafCreate(classType: typeof ASTLeaf): FnCreateASTLeaf {
   return (t: Token) => new classType(t);
 }
+
+function createPrimaryExpr(c: ASTree[]) {
+  return c.length === 1 ? c[0] : astFactory.getListCreator(PrimaryExpr)(c);
+}
+
+astFactory.setLeaf(ASTLeaf, NumberLiteral, Name, StringLiteral);
+
+astFactory.setList(
+  PrimaryExpr,
+  NegativeExpr,
+  BinaryExpr,
+  BlockStmnt,
+  IfStmnt,
+  WhileStmnt,
+  NullStmnt
+);
+astFactory.setListCreator(PrimaryExpr, createPrimaryExpr);
 
 export class BasicParser {
   protected reserved: Set<string> = new Set();
   protected operators = new Operators();
   // 注意这里使用的引用
   protected expr0: Parser = rule();
-  protected primary = rule(PrimaryExpr.create).or(
+  protected primary = rule(astFactory.getListCreator(PrimaryExpr)).or(
     rule().sep('(').ast(this.expr0).sep(')'),
-    rule().number(leafCreate(NumberLiteral)),
-    rule().identifier(this.reserved, leafCreate(Name)),
-    rule().string(leafCreate(StringLiteral))
+    rule().number(astFactory.getLeafCreator(NumberLiteral)),
+    rule().identifier(this.reserved, astFactory.getLeafCreator(Name)),
+    rule().string(astFactory.getLeafCreator(StringLiteral))
   );
   protected factor = rule().or(
-    rule(listCreate(NegativeExpr)).sep('-').ast(this.primary),
+    rule(astFactory.getListCreator(NegativeExpr)).sep('-').ast(this.primary),
     this.primary
   );
   protected expr = this.expr0.expression(
-    listCreate(BinaryExpr),
+    astFactory.getListCreator(BinaryExpr),
     this.factor,
     this.operators
   );
   protected statement0 = rule();
-  protected block = rule(listCreate(BlockStmnt))
+  protected block = rule(astFactory.getListCreator(BlockStmnt))
     .sep('{')
     .option(this.statement0)
     .repeat(rule().sep(';', Token.EOL).option(this.statement0))
     .sep('}');
   protected simple = rule(PrimaryExpr.create).ast(this.expr);
   protected statement = this.statement0.or(
-    rule(listCreate(IfStmnt))
+    rule(astFactory.getListCreator(IfStmnt))
       .sep('if')
       .ast(this.expr)
       .ast(this.block)
       .option(rule().sep('else').ast(this.block)),
-    rule(listCreate(WhileStmnt)).sep('while').ast(this.expr).ast(this.block),
+    rule(astFactory.getListCreator(WhileStmnt))
+      .sep('while')
+      .ast(this.expr)
+      .ast(this.block),
     this.simple
   );
 
   protected program = rule()
-    .or(this.statement, rule(listCreate(NullStmnt)))
+    .or(this.statement, rule(astFactory.getListCreator(NullStmnt)))
     .sep(';', Token.EOL);
 
   constructor() {

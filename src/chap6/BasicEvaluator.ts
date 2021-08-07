@@ -4,14 +4,14 @@ import { ASTree } from '../stone/ast/ASTree';
 import { BinaryExpr } from '../stone/ast/BinaryExpr';
 import { BlockStmnt } from '../stone/ast/BlockStmnt';
 import { IfStmnt } from '../stone/ast/IfStmnt';
-import { Name } from '../stone/ast/name';
+import { Name } from '../stone/ast/Name';
 import { NegativeExpr } from '../stone/ast/NegativeExpr';
 import { NullStmnt } from '../stone/ast/NullStmnt';
 import { NumberLiteral } from '../stone/ast/NumberLiteral';
 import { StringLiteral } from '../stone/ast/StringLiteral';
 import { WhileStmnt } from '../stone/ast/WhileStmnt';
 import { StoneException } from '../stone/StoneException';
-import { inject } from '../utils/inject';
+import { astFactory } from '../utils/ASTFactory';
 import { Environment } from './Environment';
 
 const TRUE = 1;
@@ -147,14 +147,5 @@ class WhileEx extends WhileStmnt {
   }
 }
 
-inject(ASTree.prototype, ASTreeEx.prototype);
-inject(ASTList.prototype, ASTListEx.prototype);
-inject(ASTLeaf.prototype, ASTLeafEx.prototype);
-inject(NumberLiteral.prototype, NumberEx.prototype);
-inject(StringLiteral.prototype, StringEx.prototype);
-inject(Name.prototype, NameEx.prototype);
-inject(NegativeExpr.prototype, NegativeEx.prototype);
-inject(BinaryExpr.prototype, BinaryEx.prototype);
-inject(BlockStmnt.prototype, BlockEx.prototype);
-inject(IfStmnt.prototype, IfEx.prototype);
-inject(WhileStmnt.prototype, WhileEx.prototype);
+astFactory.setLeaf(ASTLeafEx, NumberEx, StringEx, NameEx);
+astFactory.setList(ASTListEx, NegativeEx, BinaryEx, BlockEx, IfEx, WhileEx);

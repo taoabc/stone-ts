@@ -5,12 +5,10 @@ import { Token } from '../stone/Token';
 import { BasicEnv } from './BasicEnv';
 import { ASTreeEx } from './BasicEvaluator';
 import { Environment } from './Environment';
-import './BasicEvaluator';
 
-const FILENAME = './src/chap6/stone';
 export class BasicInterpreter {
-  static main() {
-    BasicInterpreter.run(FILENAME, new BasicParser(), new BasicEnv());
+  static main(filename: string) {
+    BasicInterpreter.run(filename, new BasicParser(), new BasicEnv());
   }
   static async run(filename: string, bp: BasicParser, env: Environment) {
     const lexer = await BasicInterpreter.getLexer(filename);

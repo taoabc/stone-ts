@@ -5,6 +5,7 @@ import { ParameterList } from './ParameterList';
 
 // [name, parameters, body]
 export class DefStmnt extends ASTList {
+  static CLASS_ID = 'DefStmnt';
   name(): string {
     return (this.child(0) as ASTLeaf).token().getText();
   }

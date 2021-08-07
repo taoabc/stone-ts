@@ -3,6 +3,7 @@ import { ASTList } from './ASTList';
 import { ClassBody } from './ClassBody';
 
 export class ClassStmnt extends ASTList {
+  static CLASS_ID = 'ClassStmnt';
   name(): string {
     return (this.child(0) as ASTLeaf).token().getText();
   }

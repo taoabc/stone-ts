@@ -4,6 +4,7 @@ import { ParameterList } from './ParameterList';
 
 // [parametersList, block]
 export class Fun extends ASTList {
+  static CLASS_ID = 'Fun';
   parameters(): ParameterList {
     return this.child(0) as ParameterList;
   }

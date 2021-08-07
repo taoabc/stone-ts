@@ -1,7 +1,7 @@
 import { ASTList } from './ASTList';
-import { ASTree } from './ASTree';
 
 export class WhileStmnt extends ASTList {
+  static CLASS_ID = 'WhileStmnt';
   // constructor(c: ASTree[]) {
   //   super(c);
   // }
