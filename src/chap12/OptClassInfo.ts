@@ -45,4 +45,7 @@ export class OptClassInfo extends ClassInfo {
       self
     );
   }
+  setMethods(methods: DefStmnt[]): void {
+    this.methodDefs = methods;
+  }
 }
