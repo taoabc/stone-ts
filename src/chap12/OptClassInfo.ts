@@ -3,6 +3,7 @@ import { Environment } from '../chap6/Environment';
 import { ClassInfo } from '../chap9/ClassInfo';
 import { ClassStmnt } from '../stone/ast/ClassStmnt';
 import { DefStmnt } from '../stone/ast/DefStmnt';
+import { DefStmntEx2 } from './ObjOptimizer';
 import { OptMethod } from './OptMethod';
 import { OptStoneObject } from './OptStoneObject';
 

@@ -11,4 +11,4 @@ EnableClosureEvaluator();
 EnableNativeEvaluator();
 EnableClassEvaluator();
 
-ClassInterpreter.main('./src/chap9/class.stone');
+ClassInterpreter.main('./src/chap12/code');
