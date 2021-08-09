@@ -34,7 +34,7 @@ export class ClassStmntEx extends ClassStmnt {
     const fieldNames = new MemberSymbols(methodNames, MemberSymbols.FILED);
     const ci = new OptClassInfo(this, env, methodNames, fieldNames);
     (env as EnvEx2).put(this.name(), ci);
-    const methods: DefStmnt[] = new Array();
+    const methods: DefStmnt[] = [];
     if (ci.superClass() != null)
       ci.superClass().copyTo(fieldNames, methodNames, methods);
     const newSyms = new SymbolThis(fieldNames);

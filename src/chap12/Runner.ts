@@ -17,6 +17,6 @@ EnableClassEvaluator();
 EnableArrayEvaluator();
 EnableEnvOptimizer();
 EnableObjOptimizer();
-// EnableInlineCache();
+EnableInlineCache();
 
-ObjOptInterpreter.main('./src/chap12/code');
+ObjOptInterpreter.main('./src/temp/code');

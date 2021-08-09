@@ -1,9 +1,18 @@
+//class C {
+//  a = 1
+//  def f(){
+//    "f return"
+//  }
+//}
+//t = C.new
+//print t.f()
+
 class Fib {
-  this.fib0 = 0
-  this.fib1 = 1
+  fib0 = 0
+  fib1 = 1
   def fib (n) {
     if n == 0 {
-      this.fib0
+      fib0
       } else {
         if n == 1 {
           this.fib1

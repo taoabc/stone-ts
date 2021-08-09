@@ -17,7 +17,7 @@ export class OptMethod extends OptFunction {
   }
   makeEnv(): Environment {
     const e = new ArrayEnv(this.size, this._env);
-    e.putNest(0, 0, self);
+    e.putNest(0, 0, this.self);
     return e;
   }
 }
