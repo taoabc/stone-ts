@@ -83,7 +83,7 @@ export class FunEx extends Fun {
   ): number {
     const newSyms = new Symbols(syms);
     (params as ParamsEx).lookup(newSyms);
-    (body as ASTListEx).lookup(newSyms); // todo 可能有问题
+    (body as ASTListEx).lookup(newSyms); // body 直接找到了ASTList的lookup
     return newSyms.size();
   }
 }

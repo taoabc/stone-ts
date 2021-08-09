@@ -1,4 +1,4 @@
-class Location {
+export class Location {
   constructor(public nest: number, public index: number) {}
 }
 // store {name:index}

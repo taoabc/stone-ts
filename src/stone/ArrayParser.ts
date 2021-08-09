@@ -6,7 +6,6 @@ import { rule } from './Parser';
 
 astFactory.setList(ArrayLiteral, ArrayRef);
 
-// TODO [stirng, stirng] 有BUG
 export class ArrayParser extends FuncParser {
   protected elements = rule(astFactory.getListCreator(ArrayLiteral))
     .ast(this.expr)

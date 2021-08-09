@@ -3,6 +3,7 @@ import { ClassBody } from '../stone/ast/ClassBody';
 import { ClassStmnt } from '../stone/ast/ClassStmnt';
 import { StoneException } from '../stone/StoneException';
 
+// 类定义的信息
 export class ClassInfo {
   protected _superClass: ClassInfo | null;
   constructor(

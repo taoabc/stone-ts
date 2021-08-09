@@ -5,9 +5,9 @@ import { NestedEnv } from './NestedEnv';
 
 export class Func {
   constructor(
-    private _parameters: ParameterList,
-    private _body: BlockStmnt,
-    private _env: Environment
+    protected _parameters: ParameterList,
+    protected _body: BlockStmnt,
+    protected _env: Environment
   ) {}
   parameters(): ParameterList {
     return this._parameters;

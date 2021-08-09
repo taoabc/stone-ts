@@ -12,8 +12,6 @@ export type FnCreateASTList = (list: ASTree[]) => ASTree;
 interface Element {
   parse(lexer: Lexer, res: ASTree[]): void;
   match(lexer: Lexer): boolean;
-  // TODO 先使用判断来解决多态问题
-  // isOrTree(): boolean;
 }
 
 class Tree implements Element {
