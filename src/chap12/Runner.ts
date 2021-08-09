@@ -5,6 +5,7 @@ import { EnableClosureEvaluator } from '../chap7/ClosureEvaluator';
 import { EnableFuncEvaluator } from '../chap7/FuncEvaluator';
 import { EnableNativeEvaluator } from '../chap8/NativeEvaluator';
 import { EnableClassEvaluator } from '../chap9/ClassEvaluator';
+import { EnableInlineCache } from './InlineCache';
 import { EnableObjOptimizer } from './ObjOptimizer';
 import { ObjOptInterpreter } from './ObjOptInterpreter';
 
@@ -16,5 +17,6 @@ EnableClassEvaluator();
 EnableArrayEvaluator();
 EnableEnvOptimizer();
 EnableObjOptimizer();
+// EnableInlineCache();
 
 ObjOptInterpreter.main('./src/chap12/code');

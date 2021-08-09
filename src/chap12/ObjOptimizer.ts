@@ -2,6 +2,7 @@ import { ArrayEnv } from '../chap11/ArrayEnv';
 import {
   ASTListEx,
   ASTreeOptEx,
+  BinaryEx2,
   DefStmntEx,
   EnvEx2,
   NameEx,
@@ -128,7 +129,7 @@ export class NameEx2 extends NameEx {
     return (env as EnvEx2).getNest(0, 0) as OptStoneObject;
   }
 }
-export class AssignEx extends BinaryEx {
+export class AssignEx extends BinaryEx2 {
   computeAssign(env: Environment, rvalue: unknown): unknown {
     const le = this.left();
     if (le instanceof PrimaryExpr) {
@@ -159,4 +160,5 @@ export class AssignEx extends BinaryEx {
 export function EnableObjOptimizer() {
   astFactory.setLeaf(NameEx2);
   astFactory.setList(ClassStmntEx, ClassBodyEx, DefStmntEx2, DotEx, AssignEx);
+  // astFactory.setList(DotEx);
 }

@@ -1,27 +1,21 @@
-import { ArrayLiteral } from '../stone/ast/ArrayLiteral';
-import { NumberLiteral } from '../stone/ast/NumberLiteral';
-import { StringLiteral } from '../stone/ast/StringLiteral';
-import { leafCreate, listCreate } from '../stone/BasicParser';
-import { Lexer, Reader } from '../stone/Lexer';
-import { rule } from '../stone/Parser';
+import { EnableArrayEvaluator } from '../chap10/ArrayEvaluator';
+import { EnableEnvOptimizer } from '../chap11/EnvOptimizer';
+import { EnableBasicEvaluator } from '../chap6/BasicEvaluator';
+import { EnableClosureEvaluator } from '../chap7/ClosureEvaluator';
+import { EnableFuncEvaluator } from '../chap7/FuncEvaluator';
+import { EnableNativeEvaluator } from '../chap8/NativeEvaluator';
+import { EnableClassEvaluator } from '../chap9/ClassEvaluator';
+import { EnableObjOptimizer } from '../chap12/ObjOptimizer';
+import { ObjOptInterpreter } from '../chap12/ObjOptInterpreter';
+import { EnvOptInterpreter } from '../chap11/EnvOptInterpreter';
 
-async function getLexer() {
-  const r = new Reader();
-  await r.fromFile('./src/temp/code');
-  return new Lexer(r);
-}
+EnableBasicEvaluator();
+EnableFuncEvaluator();
+EnableClosureEvaluator();
+EnableNativeEvaluator();
+EnableClassEvaluator();
+EnableArrayEvaluator();
+EnableEnvOptimizer();
+EnableObjOptimizer();
 
-async function main() {
-  const primary = rule().string(leafCreate(StringLiteral));
-  // const primary = rule().number(leafCreate(NumberLiteral));
-
-  const program = rule(listCreate(ArrayLiteral))
-    .ast(primary)
-    .repeat(rule().sep(',').ast(primary));
-
-  const lexer = await getLexer();
-  const t = program.parse(lexer);
-  console.log(t);
-}
-
-main();
+ObjOptInterpreter.main('./src/temp/code');
