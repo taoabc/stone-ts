@@ -8,7 +8,7 @@ class Fib {
         if n == 1 {
           this.fib1
         } else {
-          this.fib(n - 1) + this.fib(n - 2)
+          fib(n - 1) + this.fib(n - 2)
       }
     }
   }
