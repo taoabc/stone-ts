@@ -73,4 +73,7 @@ export class StoneVM {
       array[index + 3]
     );
   }
+  public static readShort(array: Buffer, index: number): number {
+    return (array[index] << 8) | array[index + 1];
+  }
 }
