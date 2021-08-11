@@ -30,15 +30,17 @@ import {
 import { VmFunction } from './VmFunction';
 
 function readInt(array: Buffer, index: number): number {
-  return (
-    (array[index] << 24) |
-    (array[index + 1] << 16) |
-    (array[index + 2] << 8) |
-    array[index + 3]
-  );
+  return array.readInt32BE(index);
+  // return (
+  //   (array[index] << 24) |
+  //   (array[index + 1] << 16) |
+  //   (array[index + 2] << 8) |
+  //   array[index + 3]
+  // );
 }
 function readShort(array: Buffer, index: number): number {
-  return (array[index] << 8) | array[index + 1];
+  return array.readInt16BE(index);
+  // return (array[index] << 8) | array[index + 1];
 }
 
 // 整体从小往大生长
