@@ -99,21 +99,19 @@ export class StoneVM {
     while (this.pc >= 0) this.mainLoop();
   }
   protected mainLoop(): void {
-    switch (this._code[this.pc]) {
+    switch (this._code.readInt8(this.pc)) {
       case ICONST: // +1234 for int to read, +5 for dest register
-        this.registers[decodeRegister(this._code[this.pc + 5])] = readInt(
-          this._code,
-          this.pc + 1
-        );
+        this.registers[decodeRegister(this._code.readInt8(this.pc + 5))] =
+          readInt(this._code, this.pc + 1);
         this.pc += 6;
         break;
       case BCONST:
-        this.registers[decodeRegister(this._code[this.pc + 2])] =
-          this._code[this.pc + 1];
+        this.registers[decodeRegister(this._code.readInt8(this.pc + 2))] =
+          this._code.readInt8(this.pc + 1);
         this.pc += 3;
         break;
       case SCONST:
-        this.registers[decodeRegister(this._code[this.pc + 3])] =
+        this.registers[decodeRegister(this._code.readInt8(this.pc + 3))] =
           this._strings[readShort(this._code, this.pc + 1)];
         this.pc += 4;
         break;
@@ -124,8 +122,9 @@ export class StoneVM {
         this.moveHeapValue();
         break;
       case IFZERO:
-        const value = this.registers[decodeRegister(this._code[this.pc + 1])];
-        if (value instanceof Number && value === 0) {
+        const value =
+          this.registers[decodeRegister(this._code.readInt8(this.pc + 1))];
+        if (typeof value === 'number' && value === 0) {
           this.pc += readShort(this._code, this.pc + 2);
         } else {
           this.pc += 4;
@@ -147,9 +146,9 @@ export class StoneVM {
         this.restoreRegisters();
         break;
       case NEG:
-        const reg = decodeRegister(this._code[this.pc + 1]);
+        const reg = decodeRegister(this._code.readInt8(this.pc + 1));
         const v = this.registers[reg];
-        if (v instanceof Number) {
+        if (typeof v === 'number') {
           this.registers[reg] = -v;
         } else {
           throw new StoneException('bad operand value');
@@ -157,7 +156,8 @@ export class StoneVM {
         this.pc += 2;
         break;
       default:
-        if (this._code[this.pc] > LESS) throw new StoneException('bad opcode');
+        if (this._code.readInt8(this.pc) > LESS)
+          throw new StoneException('bad opcode');
         else this.computeNumber();
         break;
     }
@@ -166,8 +166,8 @@ export class StoneVM {
   // move src dest
   // 在栈与寄存器，或寄存器之间进行值复制操作（src 与dest 可以是reg 或int8）
   protected moveValue(): void {
-    const src = this._code[this.pc + 1];
-    const dest = this._code[this.pc + 2];
+    const src = this._code.readInt8(this.pc + 1);
+    const dest = this._code.readInt8(this.pc + 2);
     let value: unknown;
     // get value from register or stack
     if (isRegister(src)) value = this.registers[decodeRegister(src)];
@@ -180,7 +180,7 @@ export class StoneVM {
   // gmove src, dest, src will be register or heap location
   // 在堆与寄存器之间进行值复制操作（src与dest可以是reg或int16）
   protected moveHeapValue(): void {
-    const rand = this._code[this.pc + 1];
+    const rand = this._code.readInt8(this.pc + 1);
     if (isRegister(rand)) {
       // register -> heap
       const dest = readShort(this._code, this.pc + 2);
@@ -188,7 +188,7 @@ export class StoneVM {
     } else {
       // heap location -> register
       const src = readShort(this._code, this.pc + 1); // read pointer
-      this.registers[decodeRegister(this._code[this.pc + 3])] =
+      this.registers[decodeRegister(this._code.readInt8(this.pc + 3))] =
         this._heap.read(src);
     }
     this.pc += 4;
@@ -196,8 +196,9 @@ export class StoneVM {
   // call reg int8
   // 调用函数reg，该函数将调用int8个参数（同时，call之后的指令地址将被保存至ret寄存器）
   protected callFunction(): void {
-    const value = this.registers[decodeRegister(this._code[this.pc + 1])];
-    const numOfArgs = this._code[this.pc + 2];
+    const value =
+      this.registers[decodeRegister(this._code.readInt8(this.pc + 1))];
+    const numOfArgs = this._code.readInt8(this.pc + 2);
     if (value instanceof VmFunction && value.parameters().size() == numOfArgs) {
       this.ret = this.pc + 3; // store ret address
       this.pc = value.entry(); // pc jump to function entry
@@ -220,7 +221,7 @@ export class StoneVM {
   // stack -> [reg1, reg2, reg3, reg4, reg5, reg6, oldFp, ret]
   // fp -> oldSp, sp -> oldSp + size + SAVE_AREA_SIZE
   protected saveRegisters(): void {
-    const size = decodeOffset(this._code[this.pc + 1]);
+    const size = decodeOffset(this._code.readInt8(this.pc + 1));
     let dest = size + this.sp;
     for (let i = 0; i < StoneVM.NUM_OF_REG; i++)
       this._stack[dest++] = this.registers[i];
@@ -231,7 +232,7 @@ export class StoneVM {
     this.pc += 2;
   }
   protected restoreRegisters(): void {
-    let dest = decodeOffset(this._code[this.pc + 1]) + this.fp;
+    let dest = decodeOffset(this._code.readInt8(this.pc + 1)) + this.fp;
     for (let i = 0; i < StoneVM.NUM_OF_REG; i++)
       this.registers[i] = this._stack[dest++];
     this.sp = this.fp;
@@ -241,21 +242,21 @@ export class StoneVM {
   }
   // only compute number in register
   protected computeNumber(): void {
-    const left = decodeRegister(this._code[this.pc + 1]);
-    const right = decodeRegister(this._code[this.pc + 2]);
+    const left = decodeRegister(this._code.readInt8(this.pc + 1));
+    const right = decodeRegister(this._code.readInt8(this.pc + 2));
     const v1 = this.registers[left];
     const v2 = this.registers[right];
-    const areNumbers = v1 instanceof Number && v2 instanceof Number;
-    if (this._code[this.pc] === ADD && !areNumbers) {
+    const areNumbers = typeof v1 === 'number' && typeof v2 === 'number';
+    if (this._code.readInt8(this.pc) === ADD && !areNumbers) {
       this.registers[left] = '' + v1 + v2;
-    } else if (this._code[this.pc] === EQUAL && !areNumbers) {
+    } else if (this._code.readInt8(this.pc) === EQUAL && !areNumbers) {
       this.registers[left] = v1 === v2 ? StoneVM.TRUE : StoneVM.FALSE;
     } else {
       if (!areNumbers) throw new StoneException('bad operand value');
       const i1 = v1 as number;
       const i2 = v2 as number;
       let i3;
-      switch (this._code[this.pc]) {
+      switch (this._code.readInt8(this.pc)) {
         case ADD:
           i3 = i1 + i2;
           break;

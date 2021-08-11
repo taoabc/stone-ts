@@ -1,4 +1,8 @@
-def add(x, y) {
-  x - y
+def f (n) {
+  if n > 2 {
+    n
+  } else {
+    n + 1
+  }
 }
-add(2, 3)
+f 6
