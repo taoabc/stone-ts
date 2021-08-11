@@ -1,18 +1,57 @@
 import {
+  ADD,
   BCONST,
   CALL,
+  DIV,
+  EQUAL,
   GMOVE,
   GOTO,
   ICONST,
   IFZERO,
+  LESS,
+  MORE,
   MOVE,
+  MUL,
   NEG,
+  REM,
   RESTORE,
   RETURN,
   SAVE,
   SCONST,
+  SUB,
 } from './Opcode';
 import { StoneVM } from './StoneVM';
+
+function printOp(op: string, v1?: number, v2?: number) {
+  let str = op;
+  if (v1 != null) str += ' ' + v1;
+  if (v2 != null) str += ' ' + v2;
+  str += ';';
+  return str;
+}
+
+function opToString(op: number) {
+  switch (op) {
+    case ADD:
+      return 'ADD';
+    case SUB:
+      return 'SUB';
+    case MUL:
+      return 'MUL';
+    case DIV:
+      return 'DIV';
+    case REM:
+      return 'REM';
+    case EQUAL:
+      return 'EQUAL';
+    case MORE:
+      return 'MORE';
+    case LESS:
+      return 'LESS';
+    default:
+      throw new Error('bad opcode');
+  }
+}
 
 export class Code {
   protected codeSize = 0;
@@ -53,79 +92,86 @@ export class Code {
     let str = '';
     const code = this.svm.code();
     while (pc < this.codeSize) {
-      switch (this.svm.code().readInt8(pc)) {
+      const op = code.readInt8(pc);
+      switch (op) {
         case ICONST: // +1234 for int to read, +5 for dest register
-          str +=
-            'ICONST ' +
-            code.readInt32BE(pc + 1) +
-            ' ' +
-            code.readInt8(pc + 5) +
-            '\n';
+          str += printOp(
+            'ICONST',
+            code.readInt32BE(pc + 1),
+            code.readInt8(pc + 5)
+          );
           pc += 6;
           break;
         case BCONST:
-          str +=
-            'BCONST ' + code.readInt8(pc + 1) + code.readInt8(pc + 2) + '\n';
+          str += printOp(
+            'BCONST',
+            code.readInt8(pc + 1),
+            code.readInt8(pc + 2)
+          );
+          pc += 3;
           break;
         case SCONST:
-          str += 'SCONST ' + code.readInt16BE(pc + 1) + '\n';
-          this.registers[decodeRegister(this._code.readInt8(this.pc + 3))] =
-            this._strings[readShort(this._code, this.pc + 1)];
-          this.pc += 4;
+          str += printOp(
+            'SCONST',
+            code.readInt16BE(pc + 1),
+            code.readInt8(pc + 3)
+          );
+          pc += 4;
           break;
         case MOVE:
-          str += 'SCONST ' + code.readInt16BE(pc + 1) + '\n';
-          this.moveValue();
+          str += printOp('MOVE', code.readInt8(pc + 1), code.readInt8(pc + 2));
+          pc += 3;
           break;
         case GMOVE:
-          str += 'SCONST ' + code.readInt16BE(pc + 1) + '\n';
-          this.moveHeapValue();
+          str += printOp('GMOVE', code.readInt8(pc + 1), code.readInt8(pc + 3));
+          pc += 4;
           break;
         case IFZERO:
-          str += 'SCONST ' + code.readInt16BE(pc + 1) + '\n';
-          const value =
-            this.registers[decodeRegister(this._code.readInt8(this.pc + 1))];
-          if (typeof value === 'number' && value === 0) {
-            this.pc += readShort(this._code, this.pc + 2);
-          } else {
-            this.pc += 4;
-          }
+          str += printOp(
+            'IFZERO',
+            code.readInt8(pc + 1),
+            code.readInt16BE(pc + 2)
+          );
+          pc += 4;
           break;
         case GOTO:
-          str += 'SCONST ' + code.readInt16BE(pc + 1) + '\n';
-          this.pc += readShort(this._code, this.pc + 1);
+          str += printOp('GOTO', code.readInt16BE(pc + 1));
+          pc += 3;
           break;
         case CALL:
-          str += 'SCONST ' + code.readInt16BE(pc + 1) + '\n';
-          this.callFunction();
+          str += printOp(
+            'CALL',
+            code.readInt8(pc + 1),
+            code.readInt16BE(pc + 2)
+          );
+          pc += 4;
           break;
         case RETURN:
-          str += 'SCONST ' + code.readInt16BE(pc + 1) + '\n';
-          this.pc = this.ret;
+          str += printOp('RETURN');
+          pc += 1;
           break;
         case SAVE:
-          str += 'SCONST ' + code.readInt16BE(pc + 1) + '\n';
-          this.saveRegisters();
+          str += printOp('SAVE', code.readInt8(pc + 1));
+          pc += 2;
           break;
         case RESTORE:
-          str += 'SCONST ' + code.readInt16BE(pc + 1) + '\n';
-          this.restoreRegisters();
+          str += printOp('RESTORE', code.readInt8(pc + 1));
+          pc += 2;
           break;
         case NEG:
-          str += 'SCONST ' + code.readInt16BE(pc + 1) + '\n';
-          const reg = decodeRegister(this._code.readInt8(this.pc + 1));
-          const v = this.registers[reg];
-          if (typeof v === 'number') {
-            this.registers[reg] = -v;
-          } else {
-            throw new StoneException('bad operand value');
-          }
-          this.pc += 2;
+          str += printOp('NEG', code.readInt8(pc + 1));
+          pc += 2;
           break;
         default:
-          if (this._code.readInt8(this.pc) > LESS)
-            throw new StoneException('bad opcode');
-          else str += code.readInt8(pc) + code.readInt8(pc + 1) + '\n';
+          if (op > LESS) throw new Error('bad opcode');
+          else {
+            str += printOp(
+              opToString(op),
+              code.readInt8(pc + 1),
+              code.readInt8(pc + 2)
+            );
+            pc += 3;
+          }
           break;
       }
     }

@@ -1,4 +1,3 @@
-import { timeStamp } from 'console';
 import {
   BinaryEx2,
   DefStmntEx,
@@ -13,13 +12,10 @@ import { Arguments } from '../stone/ast/Arguments';
 import { ASTLeaf } from '../stone/ast/ASTLeaf';
 import { ASTList } from '../stone/ast/ASTList';
 import { ASTree } from '../stone/ast/ASTree';
-import { BinaryExpr } from '../stone/ast/BinaryExpr';
 import { BlockStmnt } from '../stone/ast/BlockStmnt';
 import { IfStmnt } from '../stone/ast/IfStmnt';
 import { Name } from '../stone/ast/Name';
 import { NegativeExpr } from '../stone/ast/NegativeExpr';
-import { NumberLiteral } from '../stone/ast/NumberLiteral';
-import { StringLiteral } from '../stone/ast/StringLiteral';
 import { WhileStmnt } from '../stone/ast/WhileStmnt';
 import { StoneException } from '../stone/StoneException';
 import { astFactory } from '../utils/ASTFactory';
