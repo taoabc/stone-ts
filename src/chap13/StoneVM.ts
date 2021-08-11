@@ -1,5 +1,47 @@
+import { NativeFunction } from '../chap8/NativeFunction';
+import { ASTList } from '../stone/ast/ASTList';
+import { StoneException } from '../stone/StoneException';
 import { HeapMemory } from './HeapMemory';
-import { Opcode } from './Opcode';
+import {
+  ADD,
+  BCONST,
+  CALL,
+  decodeOffset,
+  decodeRegister,
+  DIV,
+  EQUAL,
+  GMOVE,
+  GOTO,
+  ICONST,
+  IFZERO,
+  isRegister,
+  LESS,
+  MORE,
+  MOVE,
+  MUL,
+  NEG,
+  REM,
+  RESTORE,
+  RETURN,
+  SAVE,
+  SCONST,
+  SUB,
+} from './Opcode';
+import { VmFunction } from './VmFunction';
+
+function readInt(array: Buffer, index: number): number {
+  return (
+    (array[index] << 24) |
+    (array[index + 1] << 16) |
+    (array[index + 2] << 8) |
+    array[index + 3]
+  );
+}
+function readShort(array: Buffer, index: number): number {
+  return (array[index] << 8) | array[index + 1];
+}
+
+// 整体从小往大生长
 
 export class StoneVM {
   protected _code: Buffer;
@@ -8,10 +50,10 @@ export class StoneVM {
 
   protected registers: unknown[];
 
-  public pc: number = 0;
-  public fp: number = 0;
-  public sp: number = 0;
-  public ret: number = 0;
+  public pc: number = 0; // program counter
+  public fp: number = 0; // frame pointer
+  public sp: number = 0; // stack pointer
+  public ret: number = 0; // functon return address
 
   static NUM_OF_REG = 6;
   static SAVE_AREA_SIZE = this.NUM_OF_REG + 2;
@@ -42,7 +84,7 @@ export class StoneVM {
   code(): Buffer {
     return this._code;
   }
-  statck(): unknown[] {
+  stack(): unknown[] {
     return this._stack;
   }
   heap(): HeapMemory {
@@ -58,22 +100,191 @@ export class StoneVM {
   }
   protected mainLoop(): void {
     switch (this._code[this.pc]) {
-      case Opcode.ICONST:
+      case ICONST: // +1234 for int to read, +5 for dest register
+        this.registers[decodeRegister(this._code[this.pc + 5])] = readInt(
+          this._code,
+          this.pc + 1
+        );
+        this.pc += 6;
         break;
-      case Opcode.BCONST:
+      case BCONST:
+        this.registers[decodeRegister(this._code[this.pc + 2])] =
+          this._code[this.pc + 1];
+        this.pc += 3;
+        break;
+      case SCONST:
+        this.registers[decodeRegister(this._code[this.pc + 3])] =
+          this._strings[readShort(this._code, this.pc + 1)];
+        this.pc += 4;
+        break;
+      case MOVE:
+        this.moveValue();
+        break;
+      case GMOVE:
+        this.moveHeapValue();
+        break;
+      case IFZERO:
+        const value = this.registers[decodeRegister(this._code[this.pc + 1])];
+        if (value instanceof Number && value === 0) {
+          this.pc += readShort(this._code, this.pc + 2);
+        } else {
+          this.pc += 4;
+        }
+        break;
+      case GOTO:
+        this.pc += readShort(this._code, this.pc + 1);
+        break;
+      case CALL:
+        this.callFunction();
+        break;
+      case RETURN:
+        this.pc = this.ret;
+        break;
+      case SAVE:
+        this.saveRegisters();
+        break;
+      case RESTORE:
+        this.restoreRegisters();
+        break;
+      case NEG:
+        const reg = decodeRegister(this._code[this.pc + 1]);
+        const v = this.registers[reg];
+        if (v instanceof Number) {
+          this.registers[reg] = -v;
+        } else {
+          throw new StoneException('bad operand value');
+        }
+        this.pc += 2;
+        break;
+      default:
+        if (this._code[this.pc] > LESS) throw new StoneException('bad opcode');
+        else this.computeNumber();
         break;
     }
   }
 
-  public static readInt(array: Buffer, index: number): number {
-    return (
-      (array[index] << 24) |
-      (array[index + 1] << 16) |
-      (array[index + 2] << 8) |
-      array[index + 3]
-    );
+  // move src dest
+  // 在栈与寄存器，或寄存器之间进行值复制操作（src 与dest 可以是reg 或int8）
+  protected moveValue(): void {
+    const src = this._code[this.pc + 1];
+    const dest = this._code[this.pc + 2];
+    let value: unknown;
+    // get value from register or stack
+    if (isRegister(src)) value = this.registers[decodeRegister(src)];
+    else value = this._stack[this.fp + decodeOffset(src)];
+    // store value to register or stack
+    if (isRegister(dest)) this.registers[decodeRegister(dest)] = value;
+    else this._stack[this.fp + decodeOffset(dest)] = value;
+    this.pc += 3;
   }
-  public static readShort(array: Buffer, index: number): number {
-    return (array[index] << 8) | array[index + 1];
+  // gmove src, dest, src will be register or heap location
+  // 在堆与寄存器之间进行值复制操作（src与dest可以是reg或int16）
+  protected moveHeapValue(): void {
+    const rand = this._code[this.pc + 1];
+    if (isRegister(rand)) {
+      // register -> heap
+      const dest = readShort(this._code, this.pc + 2);
+      this._heap.write(dest, this.registers[decodeRegister(rand)]);
+    } else {
+      // heap location -> register
+      const src = readShort(this._code, this.pc + 1); // read pointer
+      this.registers[decodeRegister(this._code[this.pc + 3])] =
+        this._heap.read(src);
+    }
+    this.pc += 4;
+  }
+  // call reg int8
+  // 调用函数reg，该函数将调用int8个参数（同时，call之后的指令地址将被保存至ret寄存器）
+  protected callFunction(): void {
+    const value = this.registers[decodeRegister(this._code[this.pc + 1])];
+    const numOfArgs = this._code[this.pc + 2];
+    if (value instanceof VmFunction && value.parameters().size() == numOfArgs) {
+      this.ret = this.pc + 3; // store ret address
+      this.pc = value.entry(); // pc jump to function entry
+    } else if (
+      value instanceof NativeFunction &&
+      (value.numOfParameters() === -1 || value.numOfParameters() === numOfArgs)
+    ) {
+      const args = new Array(numOfArgs);
+      for (let i = 0; i < numOfArgs; i++) {
+        args[i] = this._stack[this.sp + i]; // stack pointer
+      }
+      // return value to stack[pc]
+      this._stack[this.sp] = value.invoke(args, new ASTList([])); // call native function
+      this.pc += 3;
+    } else throw new StoneException('bad function call');
+  }
+  // save int8
+  // int8 表示offset
+  // 将寄存器的值转移至栈中，并更改寄存器 fp与 sp的值
+  // stack -> [reg1, reg2, reg3, reg4, reg5, reg6, oldFp, ret]
+  // fp -> oldSp, sp -> oldSp + size + SAVE_AREA_SIZE
+  protected saveRegisters(): void {
+    const size = decodeOffset(this._code[this.pc + 1]);
+    let dest = size + this.sp;
+    for (let i = 0; i < StoneVM.NUM_OF_REG; i++)
+      this._stack[dest++] = this.registers[i];
+    this._stack[dest++] = this.fp;
+    this.fp = this.sp;
+    this.sp += size + StoneVM.SAVE_AREA_SIZE;
+    this._stack[dest++] = this.ret;
+    this.pc += 2;
+  }
+  protected restoreRegisters(): void {
+    let dest = decodeOffset(this._code[this.pc + 1]) + this.fp;
+    for (let i = 0; i < StoneVM.NUM_OF_REG; i++)
+      this.registers[i] = this._stack[dest++];
+    this.sp = this.fp;
+    this.fp = this._stack[dest++] as number;
+    this.ret = this._stack[dest++] as number;
+    this.pc += 2;
+  }
+  // only compute number in register
+  protected computeNumber(): void {
+    const left = decodeRegister(this._code[this.pc + 1]);
+    const right = decodeRegister(this._code[this.pc + 2]);
+    const v1 = this.registers[left];
+    const v2 = this.registers[right];
+    const areNumbers = v1 instanceof Number && v2 instanceof Number;
+    if (this._code[this.pc] === ADD && !areNumbers) {
+      this.registers[left] = '' + v1 + v2;
+    } else if (this._code[this.pc] === EQUAL && !areNumbers) {
+      this.registers[left] = v1 === v2 ? StoneVM.TRUE : StoneVM.FALSE;
+    } else {
+      if (!areNumbers) throw new StoneException('bad operand value');
+      const i1 = v1 as number;
+      const i2 = v2 as number;
+      let i3;
+      switch (this._code[this.pc]) {
+        case ADD:
+          i3 = i1 + i2;
+          break;
+        case SUB:
+          i3 = i1 - i2;
+          break;
+        case MUL:
+          i3 = i1 * i2;
+          break;
+        case DIV:
+          i3 = i1 / i2;
+          break;
+        case REM:
+          i3 = i1 % i2;
+          break;
+        case EQUAL:
+          i3 = i1 === i2 ? StoneVM.TRUE : StoneVM.FALSE;
+          break;
+        case MORE:
+          i3 = i1 > i2 ? StoneVM.TRUE : StoneVM.FALSE;
+          break;
+        case LESS:
+          i3 = i1 < i2 ? StoneVM.TRUE : StoneVM.FALSE;
+          break;
+        default:
+          throw new StoneException(' never reach here');
+      }
+      this.registers[left] = i3;
+    }
+    this.pc += 3;
   }
 }

@@ -23,60 +23,59 @@ import { StoneVM } from './StoneVM';
  * more reg 1 reg 2  如果reg 1 > reg 2 则将reg 1 赋值为1，否则赋值为0
  * less reg 1 reg 2  如果reg 1 < reg 2 则将reg 1 赋值为1，否则赋值为0
  */
-export class Opcode {
-  public static ICONST = 1; // load an integer
-  public static BCONST = 2; // load an 8bit (1byte) integer
-  public static SCONST = 3; // load a character string
-  public static MOVE = 4; // move a value
-  public static GMOVE = 5; // move a value (global variable)
-  public static IFZERO = 6; // branch if false
-  public static GOTO = 7; // always branch
-  public static CALL = 8; // call a function
-  public static RETURN = 9; // return
-  public static SAVE = 10; // save all registers
-  public static RESTORE = 11; // restore all registers
-  public static NEG = 12; // arithmetic negation
-  public static ADD = 13; // add
-  public static SUB = 14; // subtract
-  public static MUL = 15; // multiply
-  public static DIV = 16; // divide
-  public static REM = 17; // remainder
-  public static EQUAL = 18; // equal
-  public static MORE = 19; // more than
-  public static LESS = 20; // less than
+export const ICONST = 1; // load an integer
+export const BCONST = 2; // load an 8bit (1byte) integer
+export const SCONST = 3; // load a character string
+export const MOVE = 4; // move a value
+export const GMOVE = 5; // move a value (global variable)
+export const IFZERO = 6; // branch if false
+export const GOTO = 7; // always branch
+export const CALL = 8; // call a function
+export const RETURN = 9; // return
+export const SAVE = 10; // save all registers
+export const RESTORE = 11; // restore all registers
+export const NEG = 12; // arithmetic negation
+export const ADD = 13; // add
+export const SUB = 14; // subtract
+export const MUL = 15; // multiply
+export const DIV = 16; // divide
+export const REM = 17; // remainder
+export const EQUAL = 18; // equal
+export const MORE = 19; // more than
+export const LESS = 20; // less than
 
-  private static SHORT_MIN_VALUE = -Math.pow(2, 15);
-  private static SHORT_MAX_VALUE = Math.pow(2, 15) - 1;
-  private static BYTE_MAX_VALUE = Math.pow(2, 8) - 1;
+const SHORT_MIN_VALUE = -Math.pow(2, 15);
+const SHORT_MAX_VALUE = Math.pow(2, 15) - 1;
+const BYTE_MAX_VALUE = Math.pow(2, 8) - 1;
 
-  // 使用负数表示寄存器
-  static encodeRegister(reg: number): number {
-    if (reg > StoneVM.NUM_OF_REG)
-      throw new StoneException('too many registers required');
-    else return -(reg + 1);
+// 使用负数表示寄存器
+export function encodeRegister(reg: number): number {
+  if (reg > StoneVM.NUM_OF_REG)
+    throw new StoneException('too many registers required');
+  else return -(reg + 1);
+}
+export function decodeRegister(operand: number): number {
+  return -1 - operand;
+}
+// offset 不一定是偏移量，有可能是操作数
+export function encodeOffset(offset: number): number {
+  if (offset > BYTE_MAX_VALUE) {
+    throw new StoneException('offset too big');
   }
-  static decodeRegister(operand: number): number {
-    return -1 - operand;
-  }
-  static encodeOffset(offset: number): number {
-    if (offset > this.BYTE_MAX_VALUE) {
-      throw new StoneException('offset too big');
-    }
-    return offset;
-  }
-  // int16
-  static encodeShortOffset(offset: number): number {
-    if (offset < this.SHORT_MIN_VALUE || offset > this.SHORT_MAX_VALUE)
-      throw new StoneException('invalid offset');
-    return offset;
-  }
-  static decodeOffset(operand: number): number {
-    return operand;
-  }
-  static isRegister(operand: number): boolean {
-    return operand < 0;
-  }
-  static isOffset(operand: number): boolean {
-    return operand >= 0;
-  }
+  return offset;
+}
+// int16
+export function encodeShortOffset(offset: number): number {
+  if (offset < SHORT_MIN_VALUE || offset > SHORT_MAX_VALUE)
+    throw new StoneException('invalid offset');
+  return offset;
+}
+export function decodeOffset(operand: number): number {
+  return operand;
+}
+export function isRegister(operand: number): boolean {
+  return operand < 0;
+}
+export function isOffset(operand: number): boolean {
+  return operand >= 0;
 }

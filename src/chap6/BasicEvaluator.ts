@@ -32,12 +32,12 @@ class ASTLeafEx extends ASTLeaf {
     throw new StoneException('cannot eval leaf: ' + this.toString(), this);
   }
 }
-class NumberEx extends NumberLiteral {
+export class NumberEx extends NumberLiteral {
   eval(env: Environment): unknown {
     return this.value();
   }
 }
-class StringEx extends StringLiteral {
+export class StringEx extends StringLiteral {
   eval(env: Environment): unknown {
     return this.value();
   }
@@ -50,7 +50,7 @@ class NameEx extends Name {
     else return value;
   }
 }
-class NegativeEx extends NegativeExpr {
+export class NegativeEx extends NegativeExpr {
   eval(env: Environment): unknown {
     const v = (this.operand() as ASTLeafEx).eval(env);
     if (typeof v === 'number') return -v;

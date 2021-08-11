@@ -7,13 +7,13 @@ export class Natives {
     return env;
   }
   appendNatives(env: Environment) {
-    this.append(env, 'print', Natives.print);
-    this.append(env, 'len', Natives.len);
-    this.append(env, 'toInt', Natives.toInt);
-    this.append(env, 'currentTime', Natives.currentTime);
+    this.append(env, 'print', Natives.print, -1);
+    this.append(env, 'len', Natives.len, 1);
+    this.append(env, 'toInt', Natives.toInt, 1);
+    this.append(env, 'currentTime', Natives.currentTime, 0);
   }
-  append(env: Environment, name: string, method: any) {
-    env.put(name, new NativeFunction(name, method));
+  append(env: Environment, name: string, method: any, numOfParams: number) {
+    env.put(name, new NativeFunction(name, method, numOfParams));
   }
 
   static print(...args: unknown[]) {
