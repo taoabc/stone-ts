@@ -1,8 +1,8 @@
 def f (n) {
-  if n > 2 {
-    n
+  if n > 3 {
+    1
   } else {
-    n + 1
+    0
   }
 }
-f 6
+f 4
