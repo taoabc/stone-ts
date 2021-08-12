@@ -17,14 +17,14 @@ import { StoneVM } from './StoneVM';
  * save int8         将寄存器的值转移至栈中，并更改寄存器 fp与 sp的值
  * restore int8      还原之前转移至栈中的寄存器值
  * neg reg           反转reg 中保存的值的正负号
- * add reg1 reg2   计算reg1+reg2 后保存至reg1
- * sub reg1 reg2   计算reg1-reg2 后保存至reg1
- * mul reg1 reg2   计算reg1×reg2 后保存至reg1
- * div reg1 reg2   计算reg1÷reg2 后保存至reg1
- * rem reg1 reg2   计算reg1÷reg2 的余数后将余数保存至reg1
- * equal reg1 reg2 如果reg1 = reg2 则将reg1 赋值为1，否则赋值为0
- * more reg1 reg2  如果reg1 > reg2 则将reg1 赋值为1，否则赋值为0
- * less reg1 reg2  如果reg1 < reg2 则将reg1 赋值为1，否则赋值为0
+ * add reg1 reg2     计算reg1+reg2 后保存至reg1
+ * sub reg1 reg2     计算reg1-reg2 后保存至reg1
+ * mul reg1 reg2     计算reg1×reg2 后保存至reg1
+ * div reg1 reg2     计算reg1÷reg2 后保存至reg1
+ * rem reg1 reg2     计算reg1÷reg2 的余数后将余数保存至reg1
+ * equal reg1 reg2   如果reg1 = reg2 则将reg1赋值为1，否则赋值为0
+ * more reg1 reg2    如果reg1 > reg2 则将reg1赋值为1，否则赋值为0
+ * less reg1 reg2    如果reg1 < reg2 则将reg1赋值为1，否则赋值为0
  */
 export const ICONST = 1; // load an integer
 export const BCONST = 2; // load an 8bit (1byte) integer

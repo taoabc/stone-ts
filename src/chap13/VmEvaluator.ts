@@ -273,6 +273,7 @@ export class IfEx extends IfStmnt {
     c.add16(encodeShortOffset(0));
     c.set16(encodeShortOffset(c.position() - pos), pos + 2);
     const b = this.elseBlock();
+    c.nextReg = oldReg;
     if (b != null) (b as ASTreeVmEx).compile(c);
     else {
       c.add8(BCONST);

@@ -1,8 +1,9 @@
-def f (n) {
-  if n > 3 {
-    1
+def fib (n) {
+  if n < 2 {
+    n
   } else {
-    0
+    fib(n - 1) + fib(n - 2)
   }
 }
-f 4
+
+fib 33
