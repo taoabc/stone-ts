@@ -87,11 +87,12 @@ export class Code {
     this.svm.strings()[this.numOfString] = s;
     return this.numOfString++;
   }
+  // 只能打印一个函数，因为return后的地址，是活动的
   toString(): string {
     let pc = 0;
     let str = '';
     const code = this.svm.code();
-    while (pc < this.codeSize) {
+    while (pc >= 0) {
       const op = code.readInt8(pc);
       switch (op) {
         case ICONST: // +1234 for int to read, +5 for dest register
@@ -148,7 +149,7 @@ export class Code {
           break;
         case RETURN:
           str += printOp('RETURN');
-          pc += 1;
+          pc = -1; // TODO 这里需要读取ret
           break;
         case SAVE:
           str += printOp('SAVE', code.readInt8(pc + 1));
