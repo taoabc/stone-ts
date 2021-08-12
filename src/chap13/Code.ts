@@ -87,12 +87,11 @@ export class Code {
     this.svm.strings()[this.numOfString] = s;
     return this.numOfString++;
   }
-  // 只能打印一个函数，因为return后的地址，是活动的
   toString(): string {
     let pc = 0;
     let str = '';
     const code = this.svm.code();
-    while (pc >= 0) {
+    while (pc < this.codeSize) {
       const op = code.readInt8(pc);
       switch (op) {
         case ICONST: // +1234 for int to read, +5 for dest register
@@ -124,7 +123,14 @@ export class Code {
           pc += 3;
           break;
         case GMOVE:
-          str += printOp('GMOVE', code.readInt8(pc + 1), code.readInt8(pc + 3));
+          const rand = code.readInt8(pc + 1);
+          if (rand < 0) str += printOp('GMOVE', rand, code.readInt16BE(pc + 2));
+          else
+            str += printOp(
+              'GMOVE',
+              code.readInt16BE(pc + 1),
+              code.readInt8(pc + 3)
+            );
           pc += 4;
           break;
         case IFZERO:
@@ -145,11 +151,11 @@ export class Code {
             code.readInt8(pc + 1),
             code.readInt16BE(pc + 2)
           );
-          pc += 4;
+          pc += 3;
           break;
         case RETURN:
           str += printOp('RETURN');
-          pc = -1; // TODO 这里需要读取ret
+          pc += 1;
           break;
         case SAVE:
           str += printOp('SAVE', code.readInt8(pc + 1));

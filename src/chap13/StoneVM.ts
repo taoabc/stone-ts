@@ -181,6 +181,7 @@ export class StoneVM {
   }
   // gmove src, dest, src will be register or heap location
   // 在堆与寄存器之间进行值复制操作（src与dest可以是reg或int16）
+  // 这个逻辑必须基于大端序，判断负数使用大端的符号
   protected moveHeapValue(): void {
     const rand = this._code.readInt8(this.pc + 1);
     if (isRegister(rand)) {
