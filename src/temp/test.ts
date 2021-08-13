@@ -7,7 +7,6 @@ import { EnableNativeEvaluator } from '../chap8/NativeEvaluator';
 import { EnableClassEvaluator } from '../chap9/ClassEvaluator';
 import { EnableObjOptimizer } from '../chap12/ObjOptimizer';
 import { ObjOptInterpreter } from '../chap12/ObjOptInterpreter';
-import { EnvOptInterpreter } from '../chap11/EnvOptInterpreter';
 
 EnableBasicEvaluator();
 EnableFuncEvaluator();
