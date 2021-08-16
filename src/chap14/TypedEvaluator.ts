@@ -11,7 +11,6 @@ import { ASTLeaf } from '../stone/ast/ASTLeaf';
 import { BlockStmnt } from '../stone/ast/BlockStmnt';
 import { TypeTag } from '../stone/ast/TypedTag';
 import { VarStmnt } from '../stone/ast/VarStmnt';
-import { astFactory } from '../utils/ASTFactory';
 
 export class DefStmntEx2 extends DefStmntEx {
   type(): TypeTag {
@@ -26,7 +25,7 @@ export class DefStmntEx2 extends DefStmntEx {
 }
 export class ParamListEx extends ParamsEx {
   name(i: number): string {
-    return (this.child(i) as ASTLeaf).token().getText();
+    return (this.child(i).child(0) as ASTLeaf).token().getText();
   }
   typeTag(i: number): TypeTag {
     return this.child(i).child(1) as TypeTag;
@@ -45,6 +44,6 @@ export class VarStmntEx extends VarStmnt {
   }
 }
 
-export function EnableTypedEvaluator() {
-  astFactory.setList(DefStmntEx2, ParamListEx, VarStmntEx);
-}
+// export function EnableTypedEvaluator() {
+//   astFactory.setList(DefStmntEx2, ParamListEx, VarStmntEx);
+// }

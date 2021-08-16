@@ -56,7 +56,7 @@ export class PrimaryEx extends PrimaryExpr {
   }
 }
 class PostfixEx extends Postfix {
-  eval(env: Environment, value: unknown): unknown {
+  eval(_env: Environment, _value: unknown): unknown {
     throw new Error('PostfixEx not impl');
   }
 }
