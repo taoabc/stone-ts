@@ -11,3 +11,8 @@ npm install
 npm run build-w
 node dist/chap{x}/Runner.js
 ```
+
+前13章的代码和书本代码一致
+第14章的指定类型相关的代码自测通过
+第14章的类型推导，由于需要动态修改TypeInfo，TypeEnv等类，这里就不再使用astFactory这样的方式来做了，所以代码写好了，但是还没有运行。
+第14章的转机器码，由于使用了nodejs，无法进行转换，故这块的代码也是缺失的。
