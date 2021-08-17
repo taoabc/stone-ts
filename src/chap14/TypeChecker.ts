@@ -1,16 +1,11 @@
 import { ASTreeOptEx, BinaryEx2, NameEx } from '../chap11/EnvOptimizer';
+import { IfEx } from '../chap6/BasicEvaluator';
+import { BlockEx, NumberEx, StringEx } from '../chap6/BasicEvaluator';
 import { PrimaryEx } from '../chap7/FuncEvaluator';
 import { NativeArgEx } from '../chap8/NativeEvaluator';
-import { Arguments } from '../stone/ast/Arguments';
-import { BinaryExpr } from '../stone/ast/BinaryExpr';
-import { BlockStmnt } from '../stone/ast/BlockStmnt';
-import { IfStmnt } from '../stone/ast/IfStmnt';
-// import { Name } from '../stone/ast/Name';
 import { NegativeExpr } from '../stone/ast/NegativeExpr';
 import { NullStmnt } from '../stone/ast/NullStmnt';
-import { NumberLiteral } from '../stone/ast/NumberLiteral';
 import { Postfix } from '../stone/ast/Postfix';
-import { StringLiteral } from '../stone/ast/StringLiteral';
 import { WhileStmnt } from '../stone/ast/WhileStmnt';
 import { astFactory } from '../utils/ASTFactory';
 import { DefStmntEx2, ParamListEx, VarStmntEx } from './TypedEvaluator';
@@ -23,12 +18,12 @@ export class ASTreeTypeEx extends ASTreeOptEx {
     throw new Error('typeCheck should be impl');
   }
 }
-export class NumberEx extends NumberLiteral {
+export class NumberEx2 extends NumberEx {
   typeCheck(_tenv: TypeEnv): TypeInfo {
     return TypeInfo.INT;
   }
 }
-export class StringEx extends StringLiteral {
+export class StringEx2 extends StringEx {
   typeCheck(_tenv: TypeEnv): TypeInfo {
     return TypeInfo.STRING;
   }
@@ -90,7 +85,7 @@ export class BinaryEx extends BinaryEx2 {
     else throw new TypeException('bad assignment', this);
   }
 }
-export class BlockEx extends BlockStmnt {
+export class BlockEx2 extends BlockEx {
   public type?: TypeInfo;
   typeCheck(tenv: TypeEnv): TypeInfo {
     this.type = TypeInfo.INT;
@@ -101,7 +96,7 @@ export class BlockEx extends BlockStmnt {
     return this.type;
   }
 }
-export class IfEx extends IfStmnt {
+export class IfEx14 extends IfEx {
   typeCheck(tenv: TypeEnv): TypeInfo {
     const condType = (this.condition() as ASTreeTypeEx).typeCheck(tenv);
     condType.assertSubtypeOf(TypeInfo.INT, tenv, this);
@@ -133,7 +128,7 @@ export class DefStmntEx3 extends DefStmntEx2 {
       throw new TypeException('function redefinition: ' + this.name(), this);
     this.bodyEnv = new TypeEnv(this.size, tenv);
     for (let i = 0; i < params.length; i++) this.bodyEnv.put(0, i, params[i]);
-    const bodyType = (this.body() as BlockEx).typeCheck(this.bodyEnv);
+    const bodyType = (this.body() as BlockEx2).typeCheck(this.bodyEnv);
     bodyType.assertSubtypeOf(retType, tenv, this);
     return this.funcType;
   }
@@ -196,12 +191,12 @@ export class VarStmntEx2 extends VarStmntEx {
 }
 
 export function EnableTypeChecker(): void {
-  astFactory.setLeaf(NumberEx, StringEx, NameEx2);
+  astFactory.setLeaf(NumberEx2, StringEx2, NameEx2);
   astFactory.setList(
     NegativeEx,
     BinaryEx,
-    BlockEx,
-    IfEx,
+    BlockEx2,
+    IfEx14,
     WhileEx,
     DefStmntEx3,
     ParamListEx2,

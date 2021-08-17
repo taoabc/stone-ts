@@ -18,27 +18,27 @@ const TRUE = 1;
 const FALSE = 0;
 
 export class ASTreeEx extends ASTree {
-  eval(env: Environment): unknown {
+  eval(_env: Environment): unknown {
     throw new Error('ASTreeEx not implemented');
   }
 }
 class ASTListEx extends ASTList {
-  eval(env: Environment): unknown {
+  eval(_env: Environment): unknown {
     throw new StoneException('cannot eval list: ' + this.toString(), this);
   }
 }
 class ASTLeafEx extends ASTLeaf {
-  eval(env: Environment): unknown {
+  eval(_env: Environment): unknown {
     throw new StoneException('cannot eval leaf: ' + this.toString(), this);
   }
 }
 export class NumberEx extends NumberLiteral {
-  eval(env: Environment): unknown {
+  eval(_env: Environment): unknown {
     return this.value();
   }
 }
 export class StringEx extends StringLiteral {
-  eval(env: Environment): unknown {
+  eval(_env: Environment): unknown {
     return this.value();
   }
 }
@@ -124,7 +124,7 @@ export class BlockEx extends BlockStmnt {
     return result;
   }
 }
-class IfEx extends IfStmnt {
+export class IfEx extends IfStmnt {
   eval(env: Environment): unknown {
     const c = (this.condition() as ASTreeEx).eval(env);
     if (typeof c === 'number' && c !== FALSE)
